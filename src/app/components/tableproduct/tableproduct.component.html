@@ -1,0 +1,47 @@
+<table tuiTable [style.width.rem]="58">
+    <thead>
+        <tr>
+            <th tuiTh *ngIf="displayedColumns.includes('id')">ID</th>
+            <th tuiTh *ngIf="displayedColumns.includes('nombre')">Nombre</th>
+            <th tuiTh *ngIf="displayedColumns.includes('descripcion')">Descripción</th>
+            <th tuiTh *ngIf="displayedColumns.includes('precio')">Precio</th>
+            <th tuiTh *ngIf="displayedColumns.includes('categoria')">Categoría</th>
+            <th tuiTh *ngIf="displayedColumns.includes('sku')">SKU</th>
+            <th tuiTh *ngIf="displayedColumns.includes('marca')">Marca</th>
+            <th tuiTh *ngIf="displayedColumns.includes('modelo')">Modelo</th>
+            <th tuiTh *ngIf="displayedColumns.includes('fechaCreacion')">Fecha Creación</th>
+            <th tuiTh *ngIf="displayedColumns.includes('activo')">Activo</th>
+            <th tuiTh>Acciones</th>
+        </tr>
+    </thead>
+    <tbody tuiTbody>
+        <tr *ngFor="let producto of (productosState$ | async)?.productos">
+            <td tuiTd *ngIf="displayedColumns.includes('id')">{{ producto.id }}</td>
+            <td tuiTd *ngIf="displayedColumns.includes('nombre')">{{ producto.nombre }}</td>
+            <td tuiTd *ngIf="displayedColumns.includes('descripcion')">{{ producto.descripcion }}</td>
+            <td tuiTd *ngIf="displayedColumns.includes('precio')">{{ producto.precio | currency }}</td>
+            <td tuiTd *ngIf="displayedColumns.includes('categoria')">{{ producto.categoria }}</td>
+            <td tuiTd *ngIf="displayedColumns.includes('sku')">{{ producto.sku }}</td>
+            <td tuiTd *ngIf="displayedColumns.includes('marca')">{{ producto.marca }}</td>
+            <td tuiTd *ngIf="displayedColumns.includes('modelo')">{{ producto.modelo }}</td>
+            <td tuiTd *ngIf="displayedColumns.includes('fechaCreacion')">{{ producto.fecha_creacion | date }}</td>
+            <td tuiTd *ngIf="displayedColumns.includes('activo')">
+                <tui-badge [appearance]="producto.activo ? 'positive' : 'negative'">{{ producto.activo ? 'Activo' : 'No
+                    activo' }}</tui-badge>
+            </td>
+            <td tuiTd>
+                <div class="flex gap-2 ">
+                    <button appearance="secondary" iconStart="@tui.users" tuiButton tuiButtonVertical type="button"
+                        (click)="onEditProducto(producto)">
+                        Actualizar
+                    </button>
+                    <button appearance="error" iconStart="@tui.trash" tuiButton tuiButtonVertical type="button"
+                        (click)="onDeleteProducto(producto.id)">
+                        Desactivar
+                    </button>
+                </div>
+
+            </td>
+        </tr>
+    </tbody>
+</table>

@@ -1,0 +1,97 @@
+<tui-root [attr.tuiTheme]="darkMode() ? 'dark' : null">
+  <div *ngIf="loadingAuthenticated$ | async; else content">
+    <div class="loading-overlay content-body-loader">
+      <div class="wrapper">
+        <div class="dot"></div>
+        <span class="text"> Loading </span>
+      </div>
+    </div>
+  </div>
+
+
+  <ng-template #content>
+
+    <body>
+
+      <aside id="sidenav-open" class="h-screen">
+        <nav class="flex flex-col justify-between h-full p-5 bg-tui-background min-w-[250px]">
+          <div>
+
+            <a routerLink="/" class="flex items-center p-3 rounded-xl  text-xl">
+              LOGO
+            </a>
+
+            <!-- Inicio -->
+            <a routerLink="/" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="bg-tui-background-base"
+              class="flex items-center p-3 rounded-xl hover:bg-tui-background-base-alt">
+              🏠 Inicio
+            </a>
+
+            <!-- Inventario -->
+            <a routerLink="/inventario" [ngClass]="{'bg-tui-background-base': router.isActive('/inventario', false)}"
+              routerLinkActive="bg-tui-background-base"
+              class="flex items-center p-3 rounded-xl hover:bg-tui-background-base-alt">
+              📦 Inventario
+            </a>
+
+            <!-- Ventas -->
+            <a routerLink="/ventas" routerLinkActive="bg-tui-background-base"
+              class="flex items-center p-3 rounded-xl hover:bg-tui-background-base-alt">
+              💰 Ventas
+            </a>
+
+            <!-- Crear Venta -->
+            <a routerLink="/create_venta" routerLinkActive="bg-tui-background-base"
+              class="flex items-center p-3 rounded-xl hover:bg-tui-background-base-alt">
+              ➕ Crear Venta
+            </a>
+
+            <!-- Productos -->
+            <a routerLink="/productos" routerLinkActive="bg-tui-background-base"
+              class="flex items-center p-3 rounded-xl hover:bg-tui-background-base-alt">
+              📋 Productos
+            </a>
+
+            <!-- Proveedores -->
+            <a routerLink="/proveedores" routerLinkActive="bg-tui-background-base"
+              class="flex items-center p-3 rounded-xl hover:bg-tui-background-base-alt">
+              🏢 Proveedores
+            </a>
+
+            <!-- Tiendas -->
+            <a routerLink="/tiendas" routerLinkActive="bg-tui-background-base"
+              class="flex items-center p-3 rounded-xl hover:bg-tui-background-base-alt">
+              🏬 Tiendas
+            </a>
+
+            <!-- Perfil -->
+            <a routerLink="/perfil" routerLinkActive="bg-tui-background-base"
+              class="flex items-center p-3 rounded-xl hover:bg-tui-background-base-alt">
+              👤 Perfil
+            </a>
+
+            <!-- Configuración -->
+            <a routerLink="/settings" routerLinkActive="bg-tui-background-base"
+              class="flex items-center p-3 rounded-xl hover:bg-tui-background-base-alt">
+              ⚙️ Configuración
+            </a>
+          </div>
+
+          <!-- Logout -->
+          <div class="flex justify-between" (click)="logout()">
+            <a href="#" class="flex items-center p-3 rounded-xl hover:bg-tui-background-base-alt">
+              🔒 Cerrar Sesión
+            </a>
+          </div>
+        </nav>
+
+        <a href="#" id="sidenav-close" title="Close Menu" aria-label="Close Menu"></a>
+      </aside>
+      <main class="overflow-y-scroll h-screen">
+        <section>
+          <router-outlet></router-outlet>
+        </section>
+      </main>
+    </body>
+  </ng-template>
+</tui-root>

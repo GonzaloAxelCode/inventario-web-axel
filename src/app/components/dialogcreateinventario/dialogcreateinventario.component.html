@@ -1,0 +1,95 @@
+<div class="form-container mt-6  rounded-lg">
+  <form [formGroup]="inventarioForm2" (ngSubmit)="onSubmit()" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+ <tui-select
+ class="grid"
+        formControlName="producto"
+        [valueContent]="productContent"
+    >
+        Selecciona un producto
+        <tui-data-list-wrapper
+            *tuiDataList
+            [itemContent]="productContent"
+            [items]="productos"
+        />
+    </tui-select>
+
+        <ng-template
+            #productContent
+            let-item
+        >
+          <div class="card-item">
+            
+              <span class="card-name">{{ item.nombre }}</span>
+              
+          </div>
+       </ng-template>
+        <tui-select
+ class="grid"
+        formControlName="proveedor"
+        [valueContent]="proveedorContent"
+    >
+        Selecciona un proveedor
+        <tui-data-list-wrapper
+            *tuiDataList
+            [itemContent]="proveedorContent"
+            [items]="proveedores"
+        />
+    </tui-select>
+
+
+
+       <ng-template
+            #proveedorContent
+            let-item
+        >
+          <div class="card-item">
+            
+              <span class="card-name">{{ item.nombre }}</span>
+              
+          </div>
+       </ng-template>
+
+        <!-- Campos numéricos en una fila -->
+    <div class="flex space-x-3 md:col-span-2 w-full">
+      <tui-textfield class="flex-1">
+        <label tuiLabel>Cantidad</label>
+        <input [max]="100" [min]="0" [step]="1" tuiInputNumber formControlName="cantidad" />
+      </tui-textfield>
+
+      <tui-textfield class="flex-1">
+        <label tuiLabel>Stock Minimo</label>
+        <input [max]="100" [min]="0" [step]="1" tuiInputNumber formControlName="stock_minimo" />
+      </tui-textfield>
+
+      <tui-textfield class="flex-1">
+        <label tuiLabel>Stock Maximo</label>
+        <input [max]="100" [min]="0" [step]="1" tuiInputNumber formControlName="stock_maximo" />
+      </tui-textfield>
+
+    </div>
+    <div class="flex space-x-3 w-full col-span-2">
+      <tui-textfield tuiTextfieldController class="flex flex-2 w-full">
+        <label tuiLabel>Costo Compra</label>
+        <input [min]="0" prefix="S/." tuiInputNumber formControlName="costo_compra" />
+
+      </tui-textfield>
+      <tui-textfield tuiTextfieldController class="flex flex-2 w-full">
+        <label tuiLabel>Costo Venta</label>
+        <input [min]="0" prefix="S/." tuiInputNumber formControlName="costo_venta" />
+
+      </tui-textfield>
+    </div>
+
+
+    <tui-textarea formControlName="descripcion" class="w-full  col-span-2">
+      <label tuiLabel>Descripción</label>
+    </tui-textarea>
+    <!-- Botón -->
+    <div class="md:col-span-2 flex justify-end">
+      <button tuiButton size="m" type="submit" appearance="primary" [disabled]="inventarioForm2.invalid">
+        Agregar Inventario
+      </button>
+    </div>
+
+  </form>
+</div>

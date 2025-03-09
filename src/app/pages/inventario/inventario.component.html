@@ -1,0 +1,58 @@
+
+
+
+
+<div class="p-10">
+	 
+<div class="flex gap-2">
+    <button
+    iconStart="@tui.plus"
+    tuiButton
+    appearance="info"
+    tuiButtonVertical
+    type="button"
+    class="my-5 pr-3"
+    
+    (click)="showDialog()"
+>
+  Crear Inventario
+</button>
+
+</div>
+
+
+<table tuiTable [style.width.rem]="58">
+  <thead>
+    <tr>
+      <th *ngFor="let column of allColumns" tuiTh>{{ column.label }}</th>
+         <th tuiTh>Activo</th>
+      <th tuiTh>Acciones</th>
+      
+      
+    </tr>
+  </thead>
+  <tbody tuiTbody >
+    <tr *ngFor="let inventario of (inventariosState$ | async)?.inventarios ?? []">
+      <td *ngFor="let column of allColumns" tuiTd>{{ getInventarioValue(inventario, column.key) }}</td>
+       <td tuiTd >
+                <tui-badge [appearance]="inventario.activo ? 'positive' : 'negative'">{{ inventario.activo ? 'Activo' : 'No
+                    activo' }}</tui-badge>
+            </td>
+            <td tuiTd>
+                <div class="flex gap-2 ">
+                    <button appearance="secondary" iconStart="@tui.users" tuiButton tuiButtonVertical type="button"
+                    
+                        >
+                        Actualizar
+                    </button>
+                    <button appearance="error" iconStart="@tui.trash" tuiButton tuiButtonVertical type="button"
+                    
+                        >
+                        Desactivar
+                    </button>
+                </div>
+
+            </td>
+    </tr>
+  </tbody>
+</table>

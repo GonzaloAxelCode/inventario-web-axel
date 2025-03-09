@@ -1,0 +1,73 @@
+<form [formGroup]="form" class="p-6 grid">
+  <div class="w-full flex flex-col gap-3">
+    <div class="grid grid-cols-2 gap-3 w-full">
+      <tui-input-date formControlName="firstDate" tuiUnfinishedValidator="Finish filling the field">
+        Fecha desde
+      </tui-input-date>
+      <tui-input-date formControlName="endDate" class="rounded-input">
+        Fecha Hasta
+      </tui-input-date>
+    </div>
+
+
+    <div class="grid grid-cols-2 gap-3 w-full">
+      <tui-input formControlName="serie" class="rounded-input">
+        Serie
+            </tui-input>
+
+      <tui-input formControlName="numeroDocumento" class="rounded-input">
+        Número de Documento
+      </tui-input>
+    </div>
+    <div class="grid grid-cols-2 gap-3 w-full">
+      <tui-select tuiTextfieldSize="l" formControlName="puntoVenta">
+        Punto de venta
+        <input placeholder="Escoge el punto de venta" tuiTextfieldLegacy />
+              <tui-data-list-wrapper *tuiDataList [items]="puntosVenta" />
+            </tui-select>
+
+      <tui-select tuiTextfieldSize="l" formControlName="estado">
+        Estado
+        <input placeholder="Escoge el estado" tuiTextfieldLegacy />
+        <tui-data-list-wrapper *tuiDataList [items]="estados" />
+      </tui-select>
+
+
+      <tui-select tuiTextfieldSize="l" formControlName="estadoSunat">
+        Estado en Sunat
+        <input placeholder="Escoge el estado en Sunat" tuiTextfieldLegacy />
+        <tui-data-list-wrapper *tuiDataList [items]="estadosSunat" />
+      </tui-select>
+    </div>
+
+
+
+
+
+  </div>
+
+  <div class="my-3 w-full grid">
+    <button tuiButton appearance="primary">Buscar</button>
+  </div>
+</form>
+
+
+
+<table tuiTable [style.width.rem]="58" class="p-6">
+  <thead>
+    <tr>
+      <th *ngFor="let column of allColumns" tuiTh>{{ column.label }}</th>
+      
+    </tr>
+  </thead>
+  <tbody tuiTbody *ngIf="(ventasState$ | async)?.ventas?.length">
+    <tr *ngFor="let venta of (ventasState$ | async)?.ventas ?? []">
+
+      <td *ngFor="let column of allColumns" tuiTd>{{ getVentaValue(venta, column.key) }}</td>
+
+
+
+    </tr>
+
+  </tbody>
+</table>

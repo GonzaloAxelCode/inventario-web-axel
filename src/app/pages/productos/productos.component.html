@@ -1,0 +1,40 @@
+<div class="p-10">
+	 
+<div class="flex gap-2">
+    <button
+    iconStart="@tui.plus"
+    tuiButton
+    appearance="info"
+    tuiButtonVertical
+    type="button"
+    class="my-5 pr-3"
+    
+    (click)="showDialog()"
+>
+    Agregar nuevo producto
+</button>
+<button
+    iconStart="@tui.plus"
+    tuiButton
+    appearance="positive"
+    tuiButtonVertical
+    type="button"
+    class="my-5 pl-4"
+    (click)="onClick(content_modal_categoria)"
+>
+    Agregar categoria
+</button>
+
+
+</div>
+
+
+<ng-template
+    #content_modal_categoria
+    let-context
+>
+       <app-formaddcategoria></app-formaddcategoria>
+  
+</ng-template>
+    <app-tableproduct  ></app-tableproduct>
+</div>

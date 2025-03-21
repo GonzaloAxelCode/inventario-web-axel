@@ -5,14 +5,25 @@ import { catchError, exhaustMap, map, of } from 'rxjs';
 
 import { InventarioService } from '@/app/services/inventario.service';
 import {
-    ajustarStock,
-    ajustarStockFail,
-    ajustarStockSuccess,
+    actualizarInventario,
+
+
+    actualizarInventarioFail,
+
+
+    actualizarInventarioSuccess,
+
 
     createInventario,
 
     createInventarioFail,
     createInventarioSuccess,
+
+    eliminarInventarioAction,
+
+    eliminarInventarioFail,
+
+    eliminarInventarioSuccess,
 
     loadInventarios,
 
@@ -24,6 +35,11 @@ import {
     updateStockFail,
     updateStockSuccess
 } from '../actions/inventario.actions';
+
+const ERRORS_INVENTARIO = {
+    INVENTARIO_EXIXTENTE: "inventario_existente"
+}
+
 
 @Injectable()
 export class InventarioEffects {
@@ -63,7 +79,13 @@ export class InventarioEffects {
                         return createInventarioSuccess({ inventario: res });
                     }),
                     catchError(error => {
-                        this.toastr.error('Error al crear el inventario', 'Error');
+
+                        if (error.error.string_err === ERRORS_INVENTARIO.INVENTARIO_EXIXTENTE) {
+                            this.toastr.info('Ya existe un inventario con ese producto', 'Información');
+                        } else {
+                            this.toastr.error('Error al crear el inventario', 'Error');
+                        }
+
                         return of(createInventarioFail({ error }));
                     })
                 )
@@ -89,18 +111,36 @@ export class InventarioEffects {
         )
     );
 
-    ajustarStockEffect = createEffect(() =>
+    actualizarInventarioEffect = createEffect(() =>
         this.actions$.pipe(
-            ofType(ajustarStock),
-            exhaustMap(({ inventarioId, cantidad }) =>
-                this.inventarioService.ajustarStock(inventarioId, cantidad).pipe(
+            ofType(actualizarInventario),
+            exhaustMap(({ newInventario }) =>
+                this.inventarioService.actualizarInventario(newInventario).pipe(
                     map(() => {
-                        this.toastr.success('Stock ajustado exitosamente', 'Éxito');
-                        return ajustarStockSuccess({ inventarioId, cantidad });
+                        this.toastr.success('Inventario actualizado exitosamente', 'Éxito');
+                        return actualizarInventarioSuccess({ newInventario });
                     }),
                     catchError(error => {
-                        this.toastr.error('Error al ajustar el stock', 'Error');
-                        return of(ajustarStockFail({ error }));
+                        this.toastr.error('Error al actualizar el inventario', 'Error');
+                        return of(actualizarInventarioFail({ error }));
+                    })
+                )
+            )
+        )
+    );
+
+    eliminarInventarioEffect = createEffect(() =>
+        this.actions$.pipe(
+            ofType(eliminarInventarioAction),
+            exhaustMap(({ inventarioId }) =>
+                this.inventarioService.eliminarInventario(inventarioId).pipe(
+                    map(() => {
+                        this.toastr.success('Inventario eliminado', 'Éxito');
+                        return eliminarInventarioSuccess({ inventarioId });
+                    }),
+                    catchError(error => {
+                        this.toastr.error('Error al eliminar el inventario', 'Error');
+                        return of(eliminarInventarioFail({ error }));
                     })
                 )
             )

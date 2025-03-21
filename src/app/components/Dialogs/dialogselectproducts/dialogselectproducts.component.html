@@ -1,0 +1,64 @@
+
+<div  class="grid place-content-center mt-6">
+
+  <form class="flex gap-3 mb-4">
+      <tui-input class=" w-full col-span-4" >
+         Buscar Producto
+          <input
+              tuiTextfieldLegacy
+              type="text"
+          />
+      </tui-input>
+      <div class="flex gap-2 col-span-2">
+
+  <tui-select formControlName="categoria" class="w-full" [stringify]="getCategoriaNombre">
+        Categoría
+        <tui-data-list *tuiDataList>
+          
+            <button *ngFor="let categoria of categorias ?? []" tuiOption [value]="categoria">
+
+            {{ categoria.nombre }}
+          </button>
+        </tui-data-list>
+      </tui-select>
+       <button tuiButton type="submit"class="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition">
+       Buscar
+      </button>
+      </div>
+     
+  </form>
+
+
+    <table tuiTable [style.width.rem]="58">
+  <thead>
+    <tr>
+      <th *ngFor="let column of allColumns" tuiTh>{{ column.label }}</th>
+         <th tuiTh>Activo</th>
+      <th tuiTh>Acciones</th>
+      
+      
+    </tr>
+  </thead>
+  <tbody tuiTbody >
+    <tr *ngFor="let inventario of (inventariosState$ | async)?.inventarios ?? []">
+      <td *ngFor="let column of allColumns" tuiTd>{{ getInventarioValue(inventario, column.key) }}</td>
+       <td tuiTd >
+                <tui-badge [appearance]="inventario.activo ? 'positive' : 'negative'">{{ inventario.activo ? 'Activo' : 'No
+                    activo' }}</tui-badge>
+            </td>
+            <td tuiTd>
+                <div class="flex gap-2 ">
+                    <button appearance="positive" (click)="cerrarDialogo(inventario)" iconStart="@tui.plus" tuiButton tuiButtonVertical type="button"
+                    
+                        >
+                        Agregar producto
+                    </button>
+                  
+                </div>
+
+            </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+

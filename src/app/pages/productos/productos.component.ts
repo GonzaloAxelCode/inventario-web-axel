@@ -10,9 +10,9 @@ import {
 
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 
-import { DialogcreateproductComponent } from '@/app/components/dialogcreateproduct/dialogcreateproduct.component';
-import { FormaddcategoriaComponent } from "../../components/formaddcategoria/formaddcategoria.component";
-import { TableproductComponent } from "../../components/tableproduct/tableproduct.component";
+import { DialogcreateproductComponent } from '@/app/components/Dialogs/dialogcreateproduct/dialogcreateproduct.component';
+import { FormaddcategoriaComponent } from "../../components/Forms/formaddcategoria/formaddcategoria.component";
+import { TableproductComponent } from "../../components/Tables/tableproduct/tableproduct.component";
 
 @Component({
   selector: 'app-productos',

@@ -1,64 +1,41 @@
-import { VentaCreate } from '@/app/models/venta.models';
 import { ConsultaService } from '@/app/services/consultas.service';
+import { DialogService } from '@/app/services/ui/dialog.service';
 import { crearVenta } from '@/app/state/actions/venta.actions';
-import { AsyncPipe, CommonModule, NgForOf, SlicePipe } from '@angular/common';
-import { Component, effect, inject, signal } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatButtonModule } from '@angular/material/button';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
+import { AsyncPipe, CommonModule, NgForOf } from '@angular/common';
+import { ChangeDetectorRef, Component, inject, signal } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { TuiSheetDialog } from '@taiga-ui/addon-mobile';
+import { TuiAmountPipe } from '@taiga-ui/addon-commerce';
 import { TuiTable } from '@taiga-ui/addon-table';
-import { TUI_DEFAULT_MATCHER, TuiFilterPipe, TuiMatcher } from '@taiga-ui/cdk';
-import { TuiButton, TuiDropdown, TuiFallbackSrcPipe, TuiIcon, TuiTitle } from '@taiga-ui/core';
-import { TuiAvatar, TuiAvatarLabeled, TuiBadge, TuiChip, TuiFade, TuiItemsWithMore, TuiRadio, TuiStatus, TuiStep, TuiStepper } from '@taiga-ui/kit';
-import { TuiAppBar, TuiCell } from '@taiga-ui/layout';
-export enum Steps {
-  StartUp = 'Start Up',
-  CashIn = 'Cash In',
-  SellOut = 'Sell Out',
-  BroDown = 'Bro Down',
-}
+import { TuiAlertService, TuiAppearance, TuiButton, TuiDataList, TuiDropdown, TuiTextfield, TuiTitle } from '@taiga-ui/core';
+import { TuiDataListWrapper, TuiItemsWithMore, TuiRadio, TuiStepper } from '@taiga-ui/kit';
+import { TuiAppBar, TuiCardLarge, TuiCell, TuiHeader } from '@taiga-ui/layout';
+import { TuiInputModule, TuiSelectModule, TuiTextfieldControllerModule } from '@taiga-ui/legacy';
 
 @Component({
   selector: 'app-hacerventa',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatAutocompleteModule,
-    TuiStepper, TuiStep,
-    TuiTable, TuiBadge,
+  imports: [CommonModule, ReactiveFormsModule,
+
+    TuiStepper,
+    TuiTable,
     TuiItemsWithMore,
-    TuiStatus,
-    TuiAvatar,
-    TuiChip,
-    TuiCell,
-    TuiIcon,
+
     TuiRadio,
-    MatButtonModule, TuiDropdown,
-    AsyncPipe,
+    TuiDropdown,
+
     FormsModule,
-    NgForOf,
-    SlicePipe,
+
+
     TuiAppBar,
-
-    TuiAvatarLabeled,
+    TuiTextfield,
+    TuiInputModule,
     TuiButton,
-
-    TuiFade,
-    TuiFallbackSrcPipe,
-    TuiFilterPipe,
-
-    TuiSheetDialog,
-    TuiTitle,
+    TuiAppearance,
+    TuiDataList, AsyncPipe, NgForOf,
+    TuiCardLarge, TuiHeader, TuiCell, TuiTitle, TuiAmountPipe,
+    TuiDataListWrapper, TuiSelectModule,
+    TuiTextfieldControllerModule,
   ],
   providers: [
     { provide: 'Pythons', useValue: ['Python One', 'Python Two', 'Python Three'] },
@@ -66,245 +43,181 @@ export enum Steps {
   templateUrl: './hacerventa.component.html',
   styleUrl: './hacerventa.component.scss',
 
+
 })
 export class HacerventaComponent {
   selectCurrentStep = signal("Start Up");
-
+  protected readonly units = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+  protected value = this.units[0]!;
+  salesTotals = {
+    subtotal: 0,
+    igv: 0,
+    total: 0
+  };
   ventaForm: FormGroup;
-  clientes: any[] = [
-    { id: 1, documento: '76881855', nombre: 'GONZALO AXEL VALDEZ QUISPE' },
-    { id: 2, documento: '10768818555', nombre: 'VALDEZ QUISPE GONZALO AXEL SAC', razonSocial: 'VALDEZ QUISPE GONZALO AXEL SAC', direccion: 'Av. Principal 123, Lima' },
-    { id: 3, documento: '10234567890', nombre: 'EMPRESA DE IMPORTACIONES S.A.C.', razonSocial: 'EMPRESA DE IMPORTACIONES S.A.C.', direccion: 'Calle Comercio 456, Arequipa' },
-    { id: 4, documento: '87654321', nombre: 'JUAN PÉREZ RODRÍGUEZ' },
-    { id: 5, documento: '20654789012', nombre: 'SOLUCIONES TECNOLÓGICAS E.I.R.L.', razonSocial: 'SOLUCIONES TECNOLÓGICAS E.I.R.L.', direccion: 'Jr. Innovación 789, Trujillo' }
-  ];
-  selectStep(key: any) {
-    this.selectCurrentStep.set(key)
+  listMetodosPago = [" YAPE", "Efectivo"]
+  tipoComprobantes = ["Boleta", "Factura", "Sin Comprobante"]
+  formasPago = ["Contado"]
+  protected readonly options = { updateOn: 'blur' } as const;
+  private readonly dialogService = inject(DialogService);
+
+  protected allProductsForSale: any[] = [];
+  arrayCantidades = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+  selectedItem: string = '1';
+  protected sum(operations: readonly any[]): number {
+    return operations.reduce((acc, { sum }) => acc + (sum || 0), 0);
   }
 
-  constructor(private fb: FormBuilder, private consultaService: ConsultaService, private store: Store) {
+  protected orderBy(): number {
+    return 0;
+  }
+  private readonly alerts = inject(TuiAlertService);
+
+  constructor(private fb: FormBuilder, private consultaService: ConsultaService, private store: Store, private cdr: ChangeDetectorRef) {
     this.ventaForm = this.fb.group({
-      dniRuc: [''],
-      cliente: [''],
-      metodoPago: [''],
-      formaPago: [''],
-      tipoComprobante: ['']
+      tiendaId: [1, Validators.required],
+      usuarioId: [1, Validators.required],
+      metodoPago: ['', Validators.required],
+      formaPago: ['', Validators.required],
+      tipoComprobante: ['', Validators.required],
+      cliente: [null, Validators.required],
+      documento_cliente: [""],
+      nombre_cliente: [""],
+      productos: this.fb.array([], [Validators.required, Validators.minLength(1)])
     });
-    effect(() => {
-      console.log('Nuevo valor:', this.selectCurrentStep());
+    this.productosFormArray.valueChanges.subscribe(() => {
+      this.calcularTotales();
     });
   }
-  protected readonly steps = ['Start Up', 'Cash In', 'Sell Out', 'Bro Down'];
 
+  calcularTotales(): void {
+    let subtotal = 0;
+    let igv = 0;
+    let total = 0;
+    const IGV_RATE = 0.18; // 18% IGV
+
+    this.productosFormArray.controls.forEach(control => {
+      const cantidad = parseInt(control.get('cantidad_final')?.value || '0');
+      const costoVenta = parseFloat(control.get('costo_venta')?.value || '0');
+
+      const valorVenta = cantidad * costoVenta; // Subtotal sin IGV
+      subtotal += valorVenta;
+    });
+
+    igv = subtotal * IGV_RATE; // IGV calculado
+    total = subtotal; // El total solo es el subtotal (sin sumar el IGV)
+
+    this.salesTotals = { subtotal: total - igv, igv, total };
+  }
+
+
+  protected showDialog(): void {
+    this.dialogService.open().subscribe((result: any) => {
+      if (result) {
+        const productosArray = this.ventaForm.get('productos') as FormArray;
+
+        // Verificar si el producto ya existe en el FormArray
+        const productoExiste = productosArray.controls.some(control =>
+          control.get('inventarioId')?.value === result.id
+        );
+
+        if (productoExiste) {
+
+          this.alerts
+            .open('Mensaje informacion', { label: 'Producto ya esta agregado' })
+            .subscribe();
+          return; // No agregar duplicado
+        }
+
+        const nuevoProducto = this.fb.group({
+          inventarioId: [result.id, Validators.required],
+          cantidad_final: ["1", [Validators.required, Validators.min(1)]], // Validación de cantidad
+          producto_nombre: [result.producto_nombre, Validators.required],
+          nombre_categoria: [result.categoria_nombre],
+          costo_venta: [result.costo_venta, Validators.required],
+          productoId: [result.producto, Validators.required]
+        });
+
+        productosArray.push(nuevoProducto);
+        this.calcularTotales();
+      }
+    });
+  }
 
   buscarCliente() {
-    const valor = this.ventaForm.get('dniRuc')!.value;
-    if (valor.length === 8) {
-      this.buscarPorDNI(valor);
-    } else if (valor.length === 11) {
-      this.buscarPorRUC(valor);
-    }
-  }
+    const documento = this.ventaForm.get('documento_cliente')!.value;
 
-  buscarPorDNI(dni: string) {
-    this.consultaService.consultarDNI(dni).subscribe(
-      (response: any) => {
+    if (!documento) {
+      console.log('Ingrese un documento válido');
+      return;
+    }
+
+    let consultaObservable =
+      documento.length === 8
+        ? this.consultaService.consultarDNI(documento)
+        : documento.length === 11
+          ? this.consultaService.consultarRUC(documento)
+          : null;
+
+    if (!consultaObservable) {
+      console.log('Número de documento inválido');
+      return;
+    }
+
+    consultaObservable.subscribe(
+      response => {
         if (response?.data) {
-          const cliente: any = {
-            documento: response.data.numero,
-            nombre: response.data.nombre_completo
-          };
-          this.agregarCliente(cliente);
+          console.log('Cliente encontrado:', response.data);
+          this.ventaForm.patchValue({
+            nombre_cliente: response.data.nombre_completo || response.data.nombre_o_razon_social,
+            cliente: response.data  // Guardar objeto completo si lo necesitas
+          });
+          console.log(response.data)
+          this.cdr.detectChanges();
+
         }
       },
-      error => console.error('Error al buscar DNI:', error)
+      error => {
+        console.error('Error en la búsqueda:', error);
+        this.ventaForm.patchValue({
+          nombre_cliente: '',
+          cliente: null
+        });
+      }
     );
   }
 
-  buscarPorRUC(ruc: string) {
-    this.consultaService.consultarRUC(ruc).subscribe(
-      (response: any) => {
-        if (response?.data) {
-          const cliente: any = {
-
-            documento: response.data.number,
-            nombre: response.data.nombre_o_razon_social,
-            razonSocial: response.data.nombre_o_razon_social,
-            direccion: response.data.direccion
-          };
-          this.agregarCliente(cliente);
-        }
-      },
-      error => console.error('Error al buscar RUC:', error)
-    );
-  }
-
-  agregarCliente(cliente: any) {
-    const existe = this.clientes.some(c => c.documento === cliente.documento);
-    if (!existe) {
-      this.clientes.push(cliente);
-    }
-    this.ventaForm.patchValue({ cliente: cliente.documento });
-  }
-
-  imprimirJSON() {
-    const clienteSeleccionado = this.clientes.find(c => c.documento === this.ventaForm.value.cliente);
-
-    const venta: VentaCreate = {
-      cliente: clienteSeleccionado ? clienteSeleccionado.id : 0,
-      usuario: 1,
-      tienda: 1,
-      metodo_pago: this.ventaForm.value.metodoPago || '',
-      estado: 'PROCESO',
-      tipo_comprobante: this.ventaForm.value.tipoComprobante || '',
-      serie: '',
-      numero: '',
-      ruc_empresa: clienteSeleccionado?.documento.length === 11 ? clienteSeleccionado.documento : '',
-      razon_social: clienteSeleccionado?.razonSocial || '',
-      direccion_empresa: clienteSeleccionado?.documento.length === 11 ? clienteSeleccionado.direccion || '' : '',
-      documento_cliente: clienteSeleccionado?.documento || '',
-      condicion_venta: '',
-      detalles: []
-    };
-
-    console.log(venta);
-    this.store.dispatch(crearVenta({ venta }))
-  }
-
-
-
-
-  protected readonly sizes = ['l', 'm', 's'] as const;
-
-  protected size = this.sizes[0];
-
-  protected readonly data = [
-    {
-      checkbox: {
-        title: 'Data point 1',
-        subtitle: 'The first element',
-      },
-      title: {
-        icon: '@tui.file',
-        title: 'This is title',
-        chip: 'Chip',
-        subtitle: 'More information ・ Data',
-      },
-      cell: {
-        name: 'John Cleese',
-        email: 'silly@walk.uk',
-      },
-      status: {
-        value: 'Success',
-        color: 'var(--tui-status-positive)',
-      },
-      items: ['Some', 'items', 'displayed', 'here', 'and', 'can', 'overflow'],
-      progress: 78,
-      selected: false,
-    },
-    {
-      checkbox: {
-        title: 'Some title',
-        subtitle: 'Some more text',
-      },
-      title: {
-        icon: '@tui.heart',
-        title: 'More info',
-        chip: 'Chips can be here',
-      },
-      cell: {
-        name: 'Eric Idle',
-        email: 'cool@dude.com',
-      },
-      status: {
-        value: 'Failure',
-        color: 'var(--tui-status-negative)',
-      },
-      items: ['One', 'Item'],
-      progress: 91,
-      selected: false,
-    },
-    {
-      checkbox: {
-        title: 'And now',
-        subtitle: 'Completely different',
-      },
-      title: {
-        icon: '@tui.star',
-        title: 'Wow',
-      },
-      cell: {
-        name: 'Michael Palin',
-        email: 'its@man.com',
-      },
-      status: {
-        value: 'Pending',
-        color: 'var(--tui-status-warning)',
-      },
-      items: [],
-      progress: 32,
-      selected: false,
-    },
-  ];
-
-  protected get checked(): boolean | null {
-    const every = this.data.every(({ selected }) => selected);
-    const some = this.data.some(({ selected }) => selected);
-
-    return every || (some && null);
-  }
-
-  protected onCheck(checked: any): void {
-    this.data.forEach((item) => {
-      item.selected = checked;
+  borrarCliente() {
+    this.ventaForm.patchValue({
+      documento_cliente: '',
+      nombre_cliente: '',
+      cliente: null
     });
   }
 
+  hacerVenta() {
+    if (this.ventaForm.valid) {
+      const preparedData = {
+        ...this.ventaForm.value,
+      }
+      console.log(preparedData)
+      this.store.dispatch(crearVenta({ venta: preparedData }));
+      this.ventaForm.patchValue({
+        nombre_cliente: '',
+        cliente: null
+      });
+    }
 
-
-  protected open = signal(false);
-  protected search = '';
-
-  protected readonly items = [
-    {
-      name: 'Grigori Constantinopolsky',
-      avatar: 'https://avatars.githubusercontent.com/u/10106368',
-      email: 'grigori@gmail.com',
-    },
-    {
-      name: 'Nikolai Rimsky-Korsakov',
-      avatar: 'https://avatars.githubusercontent.com/u/11832552',
-      email: 'nikolai@gmail.com',
-    },
-    {
-      name: 'Hubert Wolfflegelstainhausenbergedorf',
-      avatar: 'https://avatars.githubusercontent.com/u/46284632',
-      email: 'hubert@gmail.com',
-    },
-    {
-      name: 'Arkhangelsky Constantine',
-      avatar: 'https://avatars.githubusercontent.com/u/35179038',
-      email: 'contantine@gmail.com',
-    },
-    {
-      name: 'Zoya Kosmodemyanskaya',
-      avatar: 'https://avatars.githubusercontent.com/u/8158578',
-      email: 'zoya@gmail.com',
-    },
-    {
-      name: 'Johann Gambolputty',
-      avatar: '',
-      email: 'johann@gmail.com',
-    },
-    ...inject<readonly string[]>('Pythons' as any).map((name: any) => ({
-      name,
-      avatar: '',
-      email: `${name.split(' ')[0]}@gmail.com`,
-    })),
-  ];
-
-  protected readonly filter: TuiMatcher<[(typeof this.items)[0], string]> = (
-    item,
-    search,
-  ) => TUI_DEFAULT_MATCHER(item.name, search);
+  }
+  get productosFormArray(): FormArray<FormGroup> {
+    return this.ventaForm.get('productos') as FormArray<FormGroup>;
+  }
+  protected readonly columns = ['producto_nombre', 'cantidad_final', 'costo_venta', 'acciones'];
+  actualizarCantidad(index: number, nuevaCantidad: string) {
+    this.productosFormArray.at(index).patchValue({ cantidad_final: nuevaCantidad });
+  }
+  eliminarProductoForm(index: number) {
+    this.productosFormArray.removeAt(index);
+    this.calcularTotales();
+  }
 }

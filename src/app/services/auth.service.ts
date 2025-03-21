@@ -4,7 +4,8 @@ import { inject, Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { URL_BASE } from './utils/endpoints';
-import { getTokensFromLocalStorage } from './utils/localstorage-functions';
+import { getAuthDataFromLocalStorage } from './utils/localstorage-functions';
+
 
 @Injectable({
   providedIn: 'root',
@@ -15,13 +16,17 @@ export class AuthService {
 
 
   fetchCreateToken(userAuth: UserAuth): Observable<any> {
-    return this.http.post<Tokens>(`${this.siteURL}/auth/jwt/create/`, userAuth).pipe(
+    return this.http.post<Tokens>(`${this.siteURL}/api/auth/jwt/create/custom/`, userAuth).pipe(
       catchError(error => throwError(error))
     );
   }
-
+  fetchUserMeAuthenticated(): Observable<any> {
+    return this.http.get<Tokens>(`${this.siteURL}/auth/users/me/`,).pipe(
+      catchError(error => throwError(error))
+    );
+  }
   fetchCheckAuthenticated(): Observable<any> {
-    const { accessToken }: any = getTokensFromLocalStorage();
+    const { accessToken }: any = getAuthDataFromLocalStorage();
     return this.http.post<Tokens>(`${this.siteURL}/auth/jwt/verify/`, { token: accessToken }).pipe(
       catchError(error => throwError(error))
     );

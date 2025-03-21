@@ -1,10 +1,12 @@
 
 
 @import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@100..900&display=swap');
+nav a{
+  margin-top: 3px;
+}
 
 .content-body-loader {
 	background: black;
-	font-family: 'Urbanist', sans-serif;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -23,17 +25,7 @@
 	.wrapper:hover {
 		transform: scale(1.2);
 	}
-	.text {
-		color: white;
-		font-weight: 800;
-	}
-	.dot {
-		background: white;
-		height: 0.65em;
-		width: 0.65em;
-		border-radius: 50%;
-		animation: move 0.6s ease infinite;
-	}
+
 	@keyframes move {
 		0% {
 			transform: translateX(50%);
@@ -101,12 +93,9 @@ body {
 }
 
 #profile-progress {
-  border: 1em solid white;
-  border-right-color: #4a00e0;
-  border-top-color: #4a00e0;
-  border-bottom-color: #4a00e0;
+ 
   animation: thickening 1s 0.5s linear normal;
-  border-left-color: white;
+
   border-radius: 50%;
 }
 

@@ -1,35 +1,27 @@
-
-
 import { TokenPair } from "src/app/models/auth.models";
 
+export type AuthDataLocastorage = TokenPair & { idUser: string };
 
+const STORAGE_KEY = "authData";
 
-export function getTokensFromLocalStorage(): TokenPair {
+export function getAuthDataFromLocalStorage(): AuthDataLocastorage {
     if (typeof window !== 'undefined' && window.localStorage) {
-        const accessToken = localStorage?.getItem('accessToken') || '';
-        const refreshToken = localStorage?.getItem('refreshToken') || '';
-        return {
-            accessToken: accessToken || '',
-            refreshToken: refreshToken || '',
-        };
+        const data = localStorage.getItem(STORAGE_KEY);
+        return data ? JSON.parse(data) : { accessToken: '', refreshToken: '', idUser: '0' };
     }
-    return {
-        accessToken: '',
-        refreshToken: '',
-    };
+    return { accessToken: '', refreshToken: '', idUser: '0' };
 }
 
-export function saveTokensToLocalStorage(tokens: TokenPair) {
+export function saveAuthDataToLocalStorage(authData: AuthDataLocastorage): void {
     if (typeof window !== 'undefined' && window.localStorage) {
-        localStorage.setItem('accessToken', tokens?.accessToken || '');
-        localStorage.setItem('refreshToken', tokens?.refreshToken || '');
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(authData));
     }
 }
 
-export function clearTokensLocalstorage() {
-    localStorage?.removeItem('accessToken');
-    localStorage?.removeItem('refreshToken');
+export function clearAuthDataFromLocalStorage(): void {
+    if (typeof window !== 'undefined' && window.localStorage) {
+        localStorage.removeItem(STORAGE_KEY);
+    }
 }
-
 
 

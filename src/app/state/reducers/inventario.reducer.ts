@@ -1,12 +1,15 @@
 import { Inventario } from '@/app/models/inventario.models';
 import { createReducer, on } from '@ngrx/store';
 import {
-    ajustarStock,
-    ajustarStockFail,
-    ajustarStockSuccess,
+    actualizarInventario,
+    actualizarInventarioFail,
+    actualizarInventarioSuccess,
     createInventario,
     createInventarioFail,
     createInventarioSuccess,
+    eliminarInventarioAction,
+    eliminarInventarioFail,
+    eliminarInventarioSuccess,
     loadInventarios,
     loadInventariosFail,
     loadInventariosSuccess,
@@ -82,16 +85,19 @@ export const inventarioReducer = createReducer(
     })),
 
     // Ajustar stock
-    on(ajustarStock, state => ({
+    on(actualizarInventario, state => ({
         ...state,
         loading: true
     })),
-    on(ajustarStockSuccess, (state, { inventarioId, cantidad }) => ({
+    on(actualizarInventarioSuccess, (state, { newInventario }) => ({
         ...state,
 
+        inventarios: state.inventarios.map(i =>
+            i.id === newInventario.id ? { ...i, ...newInventario } : i
+        ),
         loading: false
     })),
-    on(ajustarStockFail, (state, { error }) => ({
+    on(actualizarInventarioFail, (state, { error }) => ({
         ...state,
         errors: error,
         loading: false
@@ -111,6 +117,22 @@ export const inventarioReducer = createReducer(
         ...state,
         errors: error,
         loading: false
+    })),
+    //eliminar
+    on(eliminarInventarioAction, state => ({
+        ...state,
+        loading: true
+    })),
+    on(eliminarInventarioSuccess, (state, { inventarioId }) => ({
+        ...state,
+        inventarios: state.inventarios.filter(i => inventarioId !== i.id),
+        loading: false
+    })),
+    on(eliminarInventarioFail, (state, { error }) => ({
+        ...state,
+        errors: error,
+        loading: false
     }))
+
 );
 

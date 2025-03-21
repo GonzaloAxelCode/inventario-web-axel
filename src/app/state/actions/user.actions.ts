@@ -5,6 +5,9 @@ export enum ActionTypes {
     LOAD_USERS = 'LOAD_USERS',
     LOAD_USERS_SUCCESS = 'LOAD_USERS_SUCCESS',
     LOAD_USERS_FAIL = 'LOAD_USERS_FAIL',
+    LOAD_USER = 'LOAD_USER',  // Nueva acción para obtener un usuario
+    LOAD_USER_SUCCESS = 'LOAD_USER_SUCCESS',
+    LOAD_USER_FAIL = 'LOAD_USER_FAIL',
     CREATE_USER = 'CREATE_USER',
     CREATE_USER_SUCCESS = 'CREATE_USER_SUCCESS',
     CREATE_USER_FAIL = 'CREATE_USER_FAIL',
@@ -93,5 +96,19 @@ export const deleteUserSuccess = createAction(
 
 export const deleteUserFail = createAction(
     ActionTypes.DELETE_USER_FAIL,
+    props<{ error: any }>()
+);
+// Obtener un solo usuario por ID
+export const loadUserAction = createAction(
+    ActionTypes.LOAD_USER,
+);
+
+export const loadUserSuccess = createAction(
+    ActionTypes.LOAD_USER_SUCCESS,
+    props<{ user: User; }>()
+);
+
+export const loadUserFail = createAction(
+    ActionTypes.LOAD_USER_FAIL,
     props<{ error: any }>()
 );

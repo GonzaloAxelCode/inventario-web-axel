@@ -1,5 +1,6 @@
 import { User } from '@/app/models/user.models';
-import { clearTokensLocalstorage } from '@/app/services/utils/localstorage-functions';
+
+import { clearAuthDataFromLocalStorage } from '@/app/services/utils/localstorage-functions';
 import { createReducer, on } from '@ngrx/store';
 import { clearTokensAction } from '../actions/auth.actions';
 import {
@@ -12,9 +13,12 @@ import {
     desactivateUserAction,
     desactivateUserFail,
     desactivateUserSuccess,
+    loadUserAction,
+    loadUserFail,
     loadUsersAction,
     loadUsersFail,
     loadUsersSuccess,
+    loadUserSuccess,
     updateUserAction,
     updateUserFail,
     updateUserSuccess
@@ -22,18 +26,58 @@ import {
 
 export interface UserState {
     users: User[];
+    user: User,
     loadingUsers: boolean;
     errors: any;
 }
 
-const initialState: UserState = {
+export const initialStateUser: UserState = {
     users: [],
     loadingUsers: false,
-    errors: {}
+    errors: {},
+    user: {
+        id: 0,
+        username: '',
+        first_name: '',
+        last_name: '',
+        photo_url: '',
+        date_joined: new Date(),
+        is_active: false,
+        is_staff: false,
+        is_superuser: false,
+        es_empleado: false,
+        desactivate_account: false,
+        permissions: {
+            can_make_sale: false,
+            can_cancel_sale: false,
+            can_create_inventory: false,
+            can_modify_inventory: false,
+            can_update_inventory: false,
+            can_delete_inventory: false,
+            can_create_product: false,
+            can_update_product: false,
+            can_delete_product: false,
+            can_create_category: false,
+            can_modify_category: false,
+            can_delete_category: false,
+            can_create_supplier: false,
+            can_modify_supplier: false,
+            can_delete_supplier: false,
+            can_create_store: false,
+            can_modify_store: false,
+            can_delete_store: false,
+            view_sale: false,
+            view_inventory: false,
+            view_product: false,
+            view_category: false,
+            view_supplier: false,
+            view_store: false,
+        }
+    },
 };
 
 export const userReducer = createReducer(
-    initialState,
+    initialStateUser,
 
     // Cargar usuarios
     on(loadUsersAction, state => ({
@@ -108,12 +152,27 @@ export const userReducer = createReducer(
         errors: error
     })),
     on(clearTokensAction, (state) => {
-        clearTokensLocalstorage()
+        clearAuthDataFromLocalStorage()
         return {
             ...state,
             isAuthenticated: false,
             refreshToken: '',
             accessToken: '',
         }
-    })
+    }),
+    // Cargar un usuario por ID
+    on(loadUserAction, state => ({
+        ...state,
+
+    })),
+    on(loadUserSuccess, (state, { user }) => ({
+        ...state,
+        user,
+
+    })),
+    on(loadUserFail, (state, { error }) => ({
+        ...state,
+        errors: error,
+
+    })),
 );

@@ -14,6 +14,7 @@ import {
   TuiDataList,
   TuiDropdown,
   TuiDropdownService,
+  TuiIcon,
   TuiRoot,
   TuiTextfield
 } from '@taiga-ui/core';
@@ -35,7 +36,7 @@ import { map, Observable } from 'rxjs';
     TuiDropdown,
     TuiNavigation,
     TuiTabs,
-    TuiTextfield, RouterLinkActive, RouterLinkWithHref],
+    TuiTextfield, RouterLinkActive, RouterLinkWithHref, TuiIcon],
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -61,6 +62,9 @@ export class SidenavComponent {
   logout() {
     this.store.dispatch(clearTokensAction())
     this.router.navigate(['/login']);
+  }
+  isActiveRoute(route: string): boolean {
+    return this.router.url === route;
   }
 
   private readonly key = inject(TUI_DARK_MODE_KEY);

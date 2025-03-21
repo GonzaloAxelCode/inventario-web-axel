@@ -1,4 +1,4 @@
-import { Venta, VentaCreate } from '@/app/models/venta.models';
+import { CreateVenta, Venta } from '@/app/models/venta.models';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
@@ -23,7 +23,7 @@ export class VentaService {
     }
 
     // Crear una nueva venta
-    createVenta(venta: VentaCreate): Observable<Venta> {
+    createVenta(venta: CreateVenta): Observable<Venta> {
         return this.http.post<Venta>(`${this.siteURL}/ventas/crear/`, venta).pipe(
             catchError(error => {
                 console.error('Error al crear la venta', error);
@@ -31,4 +31,14 @@ export class VentaService {
             })
         );
     }
+    // Cancelar una venta
+    cancelarVenta(ventaId: number): Observable<Venta> {
+        return this.http.patch<Venta>(`${this.siteURL}/ventas/cancelar/${ventaId}/`, {}).pipe(
+            catchError(error => {
+                console.error('Error al cancelar la venta', error);
+                return throwError(error);
+            })
+        );
+    }
+
 }

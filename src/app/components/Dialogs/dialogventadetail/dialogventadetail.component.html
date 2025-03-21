@@ -1,0 +1,57 @@
+
+
+<div class="max-w-4xl mx-auto p-2 text-white">
+    <p class="text-2xl font-bold text-white pt-3 pb-3">Detalle del Comprobante</p>
+    
+    <div class="grid grid-cols-3 gap-2 text-sm mt-2">
+        <p><span class="font-semibold">Tipo:</span> {{ comprobante.tipo_comprobante }}</p>
+        <p><span class="font-semibold">Serie:</span> {{ comprobante.serie }}</p>
+        <p><span class="font-semibold">Correlativo:</span> {{ comprobante.correlativo }}</p>
+        <p><span class="font-semibold">Moneda:</span> {{ comprobante.moneda }}</p>
+        <p><span class="font-semibold">Cliente:</span> {{ comprobante.nombre_cliente }}</p>
+        <p><span class="font-semibold">Documento Cliente:</span> {{ comprobante.numero_documento_cliente }}</p>
+        <p><span class="font-semibold">Estado SUNAT:</span> <span class="text-green-400">{{ comprobante.estado_sunat }}</span></p>
+        
+        
+        <p><span class="font-semibold">Total:</span> S/ {{ comprobante.total }}</p>
+        <p><span class="font-semibold">Sub Total:</span> S/ {{ comprobante.sub_total }}</p>
+        <p><span class="font-semibold">Gravadas:</span> S/ {{ comprobante.gravadas }}</p>
+        <p><span class="font-semibold">IGV:</span> S/ {{ comprobante.igv }}</p>
+        <p><span class="font-semibold">Valor Venta:</span> S/ {{ comprobante.valorVenta }}</p>
+    </div>
+            <p><span class="font-semibold">Leyenda:</span>  <span class="text-sm"> {{ comprobante.leyenda }} </span></p>
+    
+    
+    <table tuiTable class="w-full text-sm border border-neutral-700 rounded-lg mt-2">
+        <thead class="bg-neutral-800">
+            <tr>
+                <th class="p-2 text-left">Código</th>
+                <th class="p-2 text-left">Descripción</th>
+                <th class="p-2 text-left">Cantidad</th>
+                <th class="p-2 text-left">Valor Unitario</th>
+                <th class="p-2 text-left">IGV</th>
+                <th class="p-2 text-left">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of comprobante.items" class="border-b border-neutral-700">
+                <td class="p-2">{{ item.codigo }}</td>
+                <td class="p-2">{{ item.descripcion }}</td>
+                <td class="p-2">{{ item.cantidad }}</td>
+                <td class="p-2">S/ {{ item.valorUnitario }}</td>
+                <td class="p-2">S/ {{ item.igv }}</td>
+                <td class="p-2">S/ {{ item.valorVenta }}</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="mt-6 flex gap-4">
+        <a [href]="comprobante.pdf_url" target="_blank" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm border border-neutral-700">Ver PDF</a>
+        <a [href]="comprobante.xml_url"  target="_blank" class="px-4 py-2 bg-gray-600 text-white rounded-lg text-sm border border-neutral-700">Ver XML</a>
+        <a [href]="comprobante.cdr_url"  target="_blank" class="px-4 py-2 bg-yellow-600 text-white rounded-lg text-sm border border-neutral-700">Ver CDR</a>
+        <a [href]="comprobante.ticket_url"  target="_blank" class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm border border-neutral-700">Ver Ticket</a>
+        <a  class="px-4 py-2 cursor-pointer bg-red-600 text-white rounded-lg text-sm border border-neutral-700">Cancelar Comprobante</a>
+        <a  class="px-4 py-2 cursor-pointer bg-red-600 text-white rounded-lg text-sm border border-neutral-700">Eliminar la venta</a>
+    </div>
+</div>
+

@@ -9,7 +9,10 @@ import {
     createUserAction, createUserFail, createUserSuccess,
     deleteUserAction, deleteUserFail, deleteUserSuccess,
     desactivateUserAction, desactivateUserFail, desactivateUserSuccess,
+    loadUserAction,
+    loadUserFail,
     loadUsersAction, loadUsersFail, loadUsersSuccess,
+    loadUserSuccess,
     updateUserAction, updateUserFail, updateUserSuccess
 } from '../actions/user.actions';
 import { AppState } from '../app.state';
@@ -23,6 +26,17 @@ export class UserEffects {
         private store: Store<AppState>,
         private toastr: ToastrService // Servicio de notificaciones
     ) { }
+    loadUserEffect = createEffect(() =>
+        this.actions$.pipe(
+            ofType(loadUserAction), // Nueva acción para cargar un usuario por ID
+            exhaustMap(() =>
+                this.userService.fetchCurrentUser().pipe(
+                    map((data: any) => loadUserSuccess({ user: data.user })),
+                    catchError(error => of(loadUserFail({ error })))
+                )
+            )
+        )
+    );
 
     // Efecto para cargar usuarios
     loadUsersEffect = createEffect(() =>

@@ -8,85 +8,83 @@
     </div>
   </div>
 
-
   <ng-template #content>
 
     <body>
-
       <aside id="sidenav-open" class="h-screen">
         <nav class="flex flex-col justify-between h-full p-5 bg-tui-background min-w-[250px]">
+            <a routerLink="/" 
+              class="flex items-center gap-3 p-3 text-xl font-bold transition-all duration-300 ease-in-out text-white"> 
+              <span>
+                LOGO
+              </span>
+            </a>
           <div>
-
-            <a routerLink="/" class="flex items-center p-3 rounded-xl  text-xl">
-              LOGO
+          
+  <a routerLink="/dashboard" routerLinkActive="bg-neutral-700"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-neutral-700 transition-all duration-300 ease-in-out"> 
+              <tui-icon icon="home" class="text-blue-500"></tui-icon> <span>Dashboard</span>
             </a>
-
-            <!-- Inicio -->
-            <a routerLink="/" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="bg-tui-background-base"
-              class="flex items-center p-3 rounded-xl hover:bg-tui-background-base-alt">
-              🏠 Inicio
-            </a>
-
             <!-- Inventario -->
-            <a routerLink="/inventario" [ngClass]="{'bg-tui-background-base': router.isActive('/inventario', false)}"
-              routerLinkActive="bg-tui-background-base"
-              class="flex items-center p-3 rounded-xl hover:bg-tui-background-base-alt">
-              📦 Inventario
+            <a routerLink="/inventario" routerLinkActive="bg-neutral-700"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-neutral-700 transition-all duration-300 ease-in-out"> 
+              <tui-icon icon="box" class="text-green-500"></tui-icon> <span>Inventario</span>
             </a>
 
             <!-- Ventas -->
-            <a routerLink="/ventas" routerLinkActive="bg-tui-background-base"
-              class="flex items-center p-3 rounded-xl hover:bg-tui-background-base-alt">
-              💰 Ventas
+            <a routerLink="/ventas" routerLinkActive="bg-neutral-700"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-neutral-700 transition-all duration-300 ease-in-out"> 
+              <tui-icon icon="shopping-cart" class="text-yellow-500"></tui-icon> <span>Ventas</span>
             </a>
 
             <!-- Crear Venta -->
-            <a routerLink="/create_venta" routerLinkActive="bg-tui-background-base"
-              class="flex items-center p-3 rounded-xl hover:bg-tui-background-base-alt">
-              ➕ Crear Venta
+            <a routerLink="/create_venta" routerLinkActive="bg-neutral-700"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-neutral-700 transition-all duration-300 ease-in-out"> 
+              <tui-icon icon="badge-dollar-sign" class="text-indigo-500"></tui-icon> <span>Crear Venta</span>
             </a>
 
             <!-- Productos -->
-            <a routerLink="/productos" routerLinkActive="bg-tui-background-base"
-              class="flex items-center p-3 rounded-xl hover:bg-tui-background-base-alt">
-              📋 Productos
+            <a routerLink="/productos" routerLinkActive="bg-neutral-700"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-neutral-700 transition-all duration-300 ease-in-out"> 
+              <tui-icon icon="list" class="text-cyan-500"></tui-icon> <span>Productos</span>
             </a>
 
             <!-- Proveedores -->
-            <a routerLink="/proveedores" routerLinkActive="bg-tui-background-base"
-              class="flex items-center p-3 rounded-xl hover:bg-tui-background-base-alt">
-              🏢 Proveedores
+            <a routerLink="/proveedores" routerLinkActive="bg-neutral-700"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-neutral-700 transition-all duration-300 ease-in-out"> 
+              <tui-icon icon="building" class="text-purple-500"></tui-icon> <span>Proveedores</span>
             </a>
 
             <!-- Tiendas -->
-            <a routerLink="/tiendas" routerLinkActive="bg-tui-background-base"
-              class="flex items-center p-3 rounded-xl hover:bg-tui-background-base-alt">
-              🏬 Tiendas
-            </a>
-
-            <!-- Perfil -->
-            <a routerLink="/perfil" routerLinkActive="bg-tui-background-base"
-              class="flex items-center p-3 rounded-xl hover:bg-tui-background-base-alt">
-              👤 Perfil
+            <a routerLink="/tiendas" routerLinkActive="bg-neutral-700"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-neutral-700 transition-all duration-300 ease-in-out"> 
+              <tui-icon icon="store" class="text-green-500"></tui-icon> <span>Tiendas</span>
             </a>
 
             <!-- Configuración -->
-            <a routerLink="/settings" routerLinkActive="bg-tui-background-base"
-              class="flex items-center p-3 rounded-xl hover:bg-tui-background-base-alt">
-              ⚙️ Configuración
+            <a routerLink="/settings" routerLinkActive="bg-neutral-700"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-neutral-700 transition-all duration-300 ease-in-out"> 
+              <tui-icon icon="settings" class="text-red-500"></tui-icon> <span>Configuración</span>
+            </a>
+
+            <!-- Reportes -->
+            <a routerLink="/reportes" routerLinkActive="bg-neutral-700"
+              class="flex items-center gap-3 p-3 rounded-xl hover:bg-neutral-700 transition-all duration-300 ease-in-out"> 
+              <tui-icon icon="bar-chart" class="text-blue-500"></tui-icon> <span>Reportes</span>
             </a>
           </div>
 
           <!-- Logout -->
           <div class="flex justify-between" (click)="logout()">
-            <a href="#" class="flex items-center p-3 rounded-xl hover:bg-tui-background-base-alt">
-              🔒 Cerrar Sesión
+            <a  class="flex items-center gap-3 p-3 rounded-xl hover:bg-tui-background-base-alt">
+              <tui-icon icon="log-out" class="text-tui-error"></tui-icon> <span>Cerrar Sesión</span>
             </a>
           </div>
         </nav>
 
-        <a href="#" id="sidenav-close" title="Close Menu" aria-label="Close Menu"></a>
+
       </aside>
+
       <main class="overflow-y-scroll h-screen">
         <section>
           <router-outlet></router-outlet>

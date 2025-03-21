@@ -14,13 +14,17 @@ export enum InventarioActionTypes {
     UPDATE_STOCK_SUCCESS = '[Inventario] Update Stock Success',
     UPDATE_STOCK_FAIL = '[Inventario] Update Stock Fail',
 
-    AJUSTAR_STOCK = '[Inventario] Ajustar Stock',
-    AJUSTAR_STOCK_SUCCESS = '[Inventario] Ajustar Stock Success',
-    AJUSTAR_STOCK_FAIL = '[Inventario] Ajustar Stock Fail',
+    ACTUALIZAR_INVENTARIO = '[Inventario] Actualizacion',
+    ACTUALIZAR_INVENTARIO_SUCCESS = '[Inventario] Actualizacion Success',
+    ACTUALIZAR_INVENTARIO_FAIL = '[Inventario] Actualizacion Fail',
+
 
     VERIFICAR_STOCK = '[Inventario] Verificar Stock',
     VERIFICAR_STOCK_SUCCESS = '[Inventario] Verificar Stock Success',
-    VERIFICAR_STOCK_FAIL = '[Inventario] Verificar Stock Fail'
+    VERIFICAR_STOCK_FAIL = '[Inventario] Verificar Stock Fail',
+    ELIMINAR_INVENTARIO = '[Inventario] Eliminar Inventario',
+    ELIMINAR_INVENTARIO_SUCCESS = '[Inventario] Eliminar Inventario Success',
+    ELIMINAR_INVENTARIO_FAIL = '[Inventario] Eliminar Inventario Fail'
 }
 
 // Cargar inventarios por producto o tienda
@@ -66,16 +70,16 @@ export const updateStockFail = createAction(
 );
 
 // Ajustar stock
-export const ajustarStock = createAction(
-    InventarioActionTypes.AJUSTAR_STOCK,
-    props<{ inventarioId: number; cantidad: number }>()
+export const actualizarInventario = createAction(
+    InventarioActionTypes.ACTUALIZAR_INVENTARIO,
+    props<{ newInventario: Partial<Inventario> }>()
 );
-export const ajustarStockSuccess = createAction(
-    InventarioActionTypes.AJUSTAR_STOCK_SUCCESS,
-    props<{ inventarioId: number, cantidad: number }>()
+export const actualizarInventarioSuccess = createAction(
+    InventarioActionTypes.ACTUALIZAR_INVENTARIO_SUCCESS,
+    props<{ newInventario: Partial<Inventario> }>()
 );
-export const ajustarStockFail = createAction(
-    InventarioActionTypes.AJUSTAR_STOCK_FAIL,
+export const actualizarInventarioFail = createAction(
+    InventarioActionTypes.ACTUALIZAR_INVENTARIO_FAIL,
     props<{ error: any }>()
 );
 
@@ -92,3 +96,17 @@ export const verificarStockFail = createAction(
     InventarioActionTypes.VERIFICAR_STOCK_FAIL,
     props<{ error: any }>()
 );
+//eliminar
+export const eliminarInventarioAction = createAction(
+    InventarioActionTypes.ELIMINAR_INVENTARIO,
+    props<{ inventarioId: number }>()
+);
+export const eliminarInventarioSuccess = createAction(
+    InventarioActionTypes.ELIMINAR_INVENTARIO_SUCCESS,
+    props<{ inventarioId: number }>()
+);
+export const eliminarInventarioFail = createAction(
+    InventarioActionTypes.ELIMINAR_INVENTARIO_FAIL,
+    props<{ error: any }>()
+);
+

@@ -7,6 +7,9 @@ import { catchError, exhaustMap, map, of } from 'rxjs';
 
 import { VentaService } from '@/app/services/venta.service';
 import {
+    cancelarVenta,
+    cancelarVentaError,
+    cancelarVentaExito,
     cargarVentasTienda,
     cargarVentasTiendaError,
     cargarVentasTiendaExito,
@@ -53,6 +56,7 @@ export class VentaEffects {
                 this.ventaService.createVenta(venta).pipe(
                     map(createdVenta => {
                         this.toastr.success('Venta creada exitosamente', 'Éxito');
+                        console.log(createdVenta)
                         return crearVentaExito({ venta: createdVenta });
                     }),
                     catchError(error => {
@@ -63,4 +67,23 @@ export class VentaEffects {
             )
         )
     );
+
+    cancelarVentaEffect = createEffect(() =>
+        this.actions$.pipe(
+            ofType(cancelarVenta),
+            exhaustMap(({ ventaId }) =>
+                this.ventaService.cancelarVenta(ventaId).pipe(
+                    map(() => {
+                        this.toastr.success('Venta cancelada exitosamente', 'Éxito');
+                        return cancelarVentaExito({ ventaId });
+                    }),
+                    catchError(error => {
+                        this.toastr.error('Error al cancelar la venta', 'Error');
+                        return of(cancelarVentaError({ error }));
+                    })
+                )
+            )
+        )
+    );
+
 }

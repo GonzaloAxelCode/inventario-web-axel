@@ -1,90 +1,11 @@
-.form-container {
-  max-width: 800px;
-  margin: auto;
-  padding: 20px;
-  background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+
+.table {
+    inline-size: 100%;
 }
+    
 
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
-}
-
-mat-form-field {
-  width: 100%;
-}
-
-.rounded-input .mat-mdc-text-field-wrapper {
-  border-radius: 50px !important;
-}
-
-.input-with-button {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.input-with-button mat-form-field {
-  flex: 1;
-}
-
-.button-container {
-  display: flex;
-  
-
-}
-
-.rounded-button {
-  border-radius: 50px;
-  padding: 10px 24px;
-}
-
-
-
-
-
-@import '@taiga-ui/core/styles/taiga-ui-local';
-
-.input {
-    @include tui-prevent-ios-scroll(); // Cambio de mixin de Less a SCSS
-
-    width: 100%;
-    margin-top: 0.75rem;
-}
-
-.favorites {
-    @include scrollbar-hidden(); // Cambio de mixin de Less a SCSS
-
-    display: flex;
-    gap: 0.75rem;
-    margin: 1rem -1rem;
-    padding: 0 0.5rem;
-    overflow: auto;
-}
-
-.items {
-    min-height: calc(100 * var(--tui-viewport-vh) - var(--tui-offset) - 19.5rem);
-}
-
-.cell {
-    width: 100%; // `inline-size: stretch;` se traduce a `width: 100%` en SCSS
-    margin: 0 -1rem;
-    white-space: nowrap;
-    overflow: hidden;
-    border-radius: 0;
-}
-
-.button {
-    @include transition(bottom); // Cambio de mixin de Less a SCSS
-
-    position: sticky;
-    bottom: max(
-        calc(100 * var(--tui-viewport-vh) - var(--tui-viewport-height) - var(--tui-viewport-y) + 1.5rem),
-        calc(env(safe-area-inset-bottom) + 1.5rem)
-    );
-    width: 100%;
-    margin-top: 1rem;
+div[tuiCell] {
+        padding-left: 0;
+        padding-right: 0;
+        box-shadow: none;
 }

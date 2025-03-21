@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { FormproveedorComponent } from "../../components/formproveedor/formproveedor.component";
-import { TableproveedorComponent } from "../../components/tableproveedor/tableproveedor.component";
+import { FormproveedorComponent } from "../../components/Forms/formproveedor/formproveedor.component";
+import { TableproveedorComponent } from "../../components/Tables/tableproveedor/tableproveedor.component";
 
 @Component({
   selector: 'app-proveedores',

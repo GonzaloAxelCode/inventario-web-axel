@@ -1,8 +1,9 @@
-import { DialogcreatetiendaComponent } from '@/app/components/dialogcreatetienda/dialogcreatetienda.component';
+import { DialogcreatetiendaComponent } from '@/app/components/Dialogs/dialogcreatetienda/dialogcreatetienda.component';
+import { TabletiendasComponent } from '@/app/components/Tables/tabletiendas/tabletiendas.component';
 import { Component } from '@angular/core';
 import { TuiAppearance, TuiButton, tuiDialog } from '@taiga-ui/core';
-import { FormaddtiendaComponent } from "../../components/formaddtienda/formaddtienda.component";
-import { TabletiendasComponent } from "../../components/tabletiendas/tabletiendas.component";
+import { FormaddtiendaComponent } from "../../components/Forms/formaddtienda/formaddtienda.component";
+
 
 @Component({
   selector: 'app-tiendas',

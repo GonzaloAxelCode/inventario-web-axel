@@ -1,6 +1,9 @@
 import { Venta } from '@/app/models/venta.models';
 import { createReducer, on } from '@ngrx/store';
 import {
+    cancelarVenta,
+    cancelarVentaError,
+    cancelarVentaExito,
     cargarVentasTienda,
     cargarVentasTiendaError,
     cargarVentasTiendaExito,
@@ -51,6 +54,22 @@ export const ventaReducer = createReducer(
         loading: false
     })),
     on(crearVentaError, (state, { error }) => ({
+        ...state,
+        error,
+        loading: false
+    })),
+    on(cancelarVenta, state => ({
+        ...state,
+        loading: true
+    })),
+    on(cancelarVentaExito, (state, { ventaId }) => ({
+        ...state,
+        ventas: state.ventas.map(venta =>
+            venta.id === ventaId ? { ...venta, estado: 'Cancelada' } : venta
+        ),
+        loading: false
+    })),
+    on(cancelarVentaError, (state, { error }) => ({
         ...state,
         error,
         loading: false

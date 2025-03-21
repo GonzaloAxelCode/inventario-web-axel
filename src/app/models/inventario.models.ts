@@ -15,6 +15,12 @@ export interface Inventario {
     proveedor: number | any
     responsable: number | any
     descripcion: string
+
+    producto_nombre: string,
+    tienda_nombre: string,
+
+    proveedor_nombre: string,
+    responsable_nombre: string
 }
 
 export type InventarioCreate = Omit<Inventario, 'id' |

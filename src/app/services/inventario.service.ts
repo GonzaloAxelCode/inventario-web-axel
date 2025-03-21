@@ -36,8 +36,8 @@ export class InventarioService {
     }
 
     // Ajustar stock (sumar o restar cantidad)
-    ajustarStock(inventarioId: number, cantidad: number): Observable<any> {
-        return this.http.patch(`${this.siteURL}/inventarios/ajustar-stock/${inventarioId}/`, { cantidad }).pipe(
+    actualizarInventario(inventarioUpdated: Partial<Inventario>): Observable<any> {
+        return this.http.patch(`${this.siteURL}/inventarios/actualizar/${inventarioUpdated.id}/`, inventarioUpdated).pipe(
             catchError(error => throwError(error))
         );
     }
@@ -45,6 +45,11 @@ export class InventarioService {
     // Verificar stock de un inventario
     verificarStock(inventarioId: number): Observable<any> {
         return this.http.get(`${this.siteURL}/inventarios/verificar-stock/${inventarioId}/`).pipe(
+            catchError(error => throwError(error))
+        );
+    }
+    eliminarInventario(inventarioId: number): Observable<any> {
+        return this.http.delete(`${this.siteURL}/inventarios/eliminar/${inventarioId}/`).pipe(
             catchError(error => throwError(error))
         );
     }

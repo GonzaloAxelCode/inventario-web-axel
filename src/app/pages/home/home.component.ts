@@ -1,55 +1,82 @@
-import { FormproveedorComponent } from '@/app/components/formproveedor/formproveedor.component';
-import { FromadduserComponent } from '@/app/components/fromadduser/fromadduser.component';
-import { TableproductComponent } from '@/app/components/tableproduct/tableproduct.component';
-import { TableproveedorComponent } from '@/app/components/tableproveedor/tableproveedor.component';
-import { TabletiendasComponent } from '@/app/components/tabletiendas/tabletiendas.component';
-import { TableUsersComponent } from '@/app/components/tableusers/tableusers.component';
-import { ConsultaService } from '@/app/services/consultas.service';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { FormaddcategoriaComponent } from "../../components/formaddcategoria/formaddcategoria.component";
-import { FormaddproductoComponent } from "../../components/formaddproducto/formaddproducto.component";
-import { FormaddtiendaComponent } from "../../components/formaddtienda/formaddtienda.component";
-import { TablecategoriesComponent } from "../../components/tablecategories/tablecategories.component";
+import { RouterModule } from '@angular/router';
+const DataModulosConfiguracion = [
+
+  {
+    title: "Dashboard",
+    subtitle: "Resumen general",
+    icono: "https://i.ibb.co/fv6M4G4/dashboard.png",
+    link: "/dashboard",
+  },
+  {
+    title: "Inventario",
+    subtitle: "Gestión de inventario",
+    icono: "https://i.ibb.co/V9X9CmL/inventario.png",
+    link: "/inventario",
+  },
+  {
+    title: "Ventas",
+    subtitle: "Registra tus ventas",
+    icono: "https://i.ibb.co/NndLtVy/ventas.png",
+    link: "/ventas",
+  },
+
+  {
+    title: "Crear Venta",
+    subtitle: "Inicia una nueva venta",
+    icono: "https://i.ibb.co/K0ffGrG/crear-venta.png",
+    link: "/create_venta",
+  },
+  {
+    title: "Productos",
+    subtitle: "Gestiona los productos",
+    icono: "https://i.ibb.co/85zJ6yG/caja-del-paquete.png",
+    link: "/productos",
+  },
+  {
+    title: "Proveedores",
+    subtitle: "Administrar proveedores",
+    icono: "https://i.ibb.co/5vgZ0fX/hombre.png",
+    link: "/proveedores",
+  },
+  {
+    title: "Tiendas",
+    subtitle: "Manejo de tiendas",
+    icono: "https://i.ibb.co/x7mHPgm/administracion-de-empresas.png",
+    link: "/tiendas",
+  },
+  {
+    title: "Perfil",
+    subtitle: "Tu información personal",
+    icono: "https://i.ibb.co/VYbMRLZ/categoria.png",
+    link: "/perfil",
+  },
+  {
+    title: "Configuración",
+    subtitle: "Ajustes de la aplicación",
+    icono: "https://i.ibb.co/1qsbCRb/piensa-fuera-de-la-caja.png",
+    link: "/settings",
+  },
+  {
+    title: "Reportes",
+    subtitle: "Consulta reportes",
+    icono: "https://i.ibb.co/0j3Y8Mc/reportes.png",
+    link: "/reportes",
+  },
+
+];
+
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule, TablecategoriesComponent, TabletiendasComponent, FormaddtiendaComponent, FormaddtiendaComponent, TableUsersComponent, FromadduserComponent, FormaddcategoriaComponent, FormaddproductoComponent, FormaddproductoComponent, TableproductComponent, TableproveedorComponent, FormproveedorComponent],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
-  dni: string = '';
-  ruc: string = '';
-  resultado: any;
+  modulos = DataModulosConfiguracion;
 
-  constructor(private consultaService: ConsultaService) { }
-
-  buscarPorDNI() {
-    if (this.dni) {
-      this.consultaService.consultarDNI(this.dni).subscribe(
-        data => {
-          this.resultado = data;
-        },
-        error => {
-          console.error('Error consultando DNI:', error);
-        }
-      );
-    }
-  }
-
-  buscarPorRUC() {
-    if (this.ruc) {
-      this.consultaService.consultarRUC(this.ruc).subscribe(
-        data => {
-          this.resultado = data;
-        },
-        error => {
-          console.error('Error consultando RUC:', error);
-        }
-      );
-    }
-  }
 }

@@ -1,5 +1,6 @@
 import { AuthService } from '@/app/services/auth.service';
-import { saveTokensToLocalStorage } from '@/app/services/utils/localstorage-functions';
+
+import { saveAuthDataToLocalStorage } from '@/app/services/utils/localstorage-functions';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, exhaustMap, map, of } from 'rxjs';
@@ -9,7 +10,10 @@ import {
     checkTokenActionSuccess,
     loginInAction,
     loginInActionFail,
-    loginInActionSuccess
+    loginInActionSuccess,
+    userMeAuthenticated,
+    userMeAuthenticatedFail,
+    userMeAuthenticatedSuccess
 } from '../actions/auth.actions';
 
 @Injectable()
@@ -24,10 +28,13 @@ export class AuthEffects {
             exhaustMap(({ username, password }) =>
                 this.authService.fetchCreateToken({ username, password }).pipe(
                     map((response: any) => {
-                        saveTokensToLocalStorage({
+                        console.log(response)
+                        saveAuthDataToLocalStorage({
                             accessToken: response?.access,
                             refreshToken: response?.refresh,
+                            idUser: response.user_id
                         });
+
 
                         return loginInActionSuccess({
                             refreshToken: response?.refresh,
@@ -35,6 +42,7 @@ export class AuthEffects {
                             isAuthenticated: true,
                             isLoadingLogin: false,
                             isLoadingLogout: false,
+                            id_user: response.user_id
                         });
                     }),
                     catchError((error) =>
@@ -46,6 +54,7 @@ export class AuthEffects {
                                 errors: error?.error,
                                 isLoadingLogin: false,
                                 isLoadingLogout: false,
+                                id_user: null
                             })
                         )
                     )
@@ -64,6 +73,21 @@ export class AuthEffects {
                         response ? checkTokenActionSuccess() : checkTokenActionFail()
                     ),
                     catchError(() => of(checkTokenActionFail()))
+                )
+            )
+        )
+    );
+    userMeEffect = createEffect(() =>
+        this.actions$.pipe(
+            ofType(userMeAuthenticated),
+            exhaustMap(() =>
+                this.authService.fetchUserMeAuthenticated().pipe(
+                    map((response: any) => {
+                        return userMeAuthenticatedSuccess({ user_id_auth: response.id })
+                    }
+
+                    ),
+                    catchError((error) => of(userMeAuthenticatedFail(error)))
                 )
             )
         )

@@ -2,7 +2,6 @@ export interface Producto {
     id: number,
     nombre?: string;
     descripcion?: string | null;
-    precio?: number | any;
     categoria?: number | null;
     sku?: string;
     marca?: string | null;
@@ -11,7 +10,7 @@ export interface Producto {
     fecha_creacion?: Date;
     fecha_actualizacion?: Date;
     activo?: boolean;
-    proveedorId?: number | null;
+    categoria_nombre?: string
 }
 
 export type ProductoCreate = Omit<Producto, 'id' |

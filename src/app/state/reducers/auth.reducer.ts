@@ -3,7 +3,8 @@ import { createReducer, on } from '@ngrx/store';
 
 
 import { AuthState } from '@/app/models/auth.models';
-import { clearTokensLocalstorage, getTokensFromLocalStorage } from '@/app/services/utils/localstorage-functions';
+
+import { clearAuthDataFromLocalStorage, getAuthDataFromLocalStorage } from '@/app/services/utils/localstorage-functions';
 import {
   checkTokenAction,
   checkTokenActionFail,
@@ -11,19 +12,24 @@ import {
   clearTokensAction,
   loginInAction,
   loginInActionFail,
-  loginInActionSuccess
+  loginInActionSuccess,
+  userMeAuthenticated,
+  userMeAuthenticatedFail,
+  userMeAuthenticatedSuccess
 } from '../actions/auth.actions';
 
-const { refreshToken, accessToken } = getTokensFromLocalStorage();
+const { refreshToken, accessToken, idUser } = getAuthDataFromLocalStorage();
 
 export const initialState: AuthState = {
   errors: {},
+  id_user: idUser || "0",
   isAuthenticated: false,
   accessToken: accessToken || '',
   refreshToken: refreshToken || '',
   isLoadingLogin: false,
   isLoadingLogout: false,
-  loadingCheckAuthenticated: false
+  loadingCheckAuthenticated: false,
+
 };
 
 export const authReducer = createReducer(
@@ -33,11 +39,7 @@ export const authReducer = createReducer(
     ...payload,
     isLoadingLogin: true,
   })),
-  on(loginInAction, (state, payload) => ({
-    ...state,
-    ...payload,
 
-  })),
   on(loginInActionSuccess, (state, payload) => ({
     ...state,
     ...payload,
@@ -49,6 +51,23 @@ export const authReducer = createReducer(
     ...payload,
     isLoadingLogin: false,
   })),
+
+  on(userMeAuthenticated, (state, _) => ({
+    ...state,
+
+  })),
+
+  on(userMeAuthenticatedSuccess, (state, { user_id_auth }) => ({
+    ...state,
+    user_id_auth
+  })),
+  on(userMeAuthenticatedFail, (state, { errors }) => ({
+    ...state,
+    errors
+
+  })),
+
+
   on(checkTokenAction, (state, payload) => ({
     ...state,
     ...payload,
@@ -69,7 +88,7 @@ export const authReducer = createReducer(
 
 
   on(clearTokensAction, (state, payload) => {
-    clearTokensLocalstorage();
+    clearAuthDataFromLocalStorage();
     return {
       ...state,
       ...payload,

@@ -4,6 +4,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { URL_BASE } from './utils/endpoints';
+import { getAuthDataFromLocalStorage } from './utils/localstorage-functions';
 
 
 @Injectable({
@@ -22,7 +23,15 @@ export class UserService {
             })
         );
     }
-
+    fetchCurrentUser(): Observable<User> {
+        const { idUser } = getAuthDataFromLocalStorage()
+        return this.http.get<User>(`${this.siteURL}/usuarios/${idUser}/`).pipe(
+            catchError(error => {
+                console.error(error);
+                return throwError(error);
+            })
+        );
+    }
     // Crear un usuario
     createUser(user: Partial<User>): Observable<User> {
         return this.http.post<User>(`${this.siteURL}/usuarios/create/`, user).pipe(

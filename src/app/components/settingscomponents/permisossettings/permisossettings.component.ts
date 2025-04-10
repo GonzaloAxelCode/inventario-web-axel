@@ -16,7 +16,7 @@ import { Observable } from 'rxjs';
   templateUrl: './permisossettings.component.html',
   styleUrl: './permisossettings.component.scss',
   providers: [
-    tuiSwitchOptionsProvider({ showIcons: true, appearance: () => 'positive' }),
+    tuiSwitchOptionsProvider({ showIcons: true, appearance: () => 'neutral' }),
   ],
 })
 export class PermisossettingsComponent {

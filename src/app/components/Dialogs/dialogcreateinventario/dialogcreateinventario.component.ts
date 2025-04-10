@@ -10,10 +10,7 @@ import { TuiComboBoxModule, TuiSelectModule, TuiTextfieldControllerModule } from
 
 import { Producto, ProductoState } from '@/app/models/producto.models';
 import { TiendaState } from '@/app/models/tienda.models';
-import { createInventario, loadInventarios } from '@/app/state/actions/inventario.actions';
-import { loadProductosAction } from '@/app/state/actions/producto.actions';
-import { loadProveedores } from '@/app/state/actions/proveedor.actions';
-import { loadTiendasAction } from '@/app/state/actions/tienda.actions';
+import { createInventario } from '@/app/state/actions/inventario.actions';
 import { AppState } from '@/app/state/app.state';
 import { ProveedorState } from '@/app/state/reducers/proveedor.reducer';
 import { selectProductoState } from '@/app/state/selectors/producto.selectors';
@@ -27,13 +24,11 @@ import { TuiDataListWrapperComponent, TuiInputNumber } from '@taiga-ui/kit';
 import { Observable } from 'rxjs';
 
 
-
 @Component({
   selector: 'app-dialogcreateinventario',
   standalone: true,
   imports: [CommonModule,
     ReactiveFormsModule,
-    TuiInputModule,
     TuiTextareaModule,
     TuiError,
     TuiButton,
@@ -41,24 +36,11 @@ import { Observable } from 'rxjs';
     TuiDataList,
     TuiTextfield,
     FormsModule, TuiComboBoxModule,
-    TuiSelectModule, TuiTabs, TuiTextfieldControllerModule, TuiDropdown, CommonModule,
-
-    FormsModule,
-    ReactiveFormsModule,
-
-    TuiDataListWrapper,
-    TuiDataList,
+    TuiSelectModule, TuiTabs, TuiDropdown,
     TuiDataListWrapperComponent,
-
-    TuiSelectModule,
-
     TuiInputNumber,
-    TuiTextareaModule,
-    TuiButton,
-
-    TuiTextfield,
     TuiTextfieldControllerModule,
-    TuiInputModule, TuiAppearance, TuiAppearance, TuiTable, TuiNumberFormat],
+    TuiInputModule, TuiAppearance, TuiTable, TuiNumberFormat],
   providers: [
 
   ],
@@ -77,9 +59,9 @@ export class DialogcreateinventarioComponent implements OnInit {
   constructor(private fb: FormBuilder, private store: Store<AppState>) {
     this.inventarioForm2 = this.fb.group({
       producto: [null, Validators.required],
-      tienda: [null, Validators.required],
+      tienda: [1, Validators.required],
       proveedor: [null, Validators.required],
-      responsable: [1],
+      responsable: [5],
       cantidad: [1, [Validators.required, Validators.min(1)]],
       stock_minimo: [1, [Validators.required, Validators.min(0)]],
       stock_maximo: [100, [Validators.required, Validators.min(1)]],
@@ -87,18 +69,8 @@ export class DialogcreateinventarioComponent implements OnInit {
       costo_venta: [1, [Validators.required,]],
       descripcion: ['', Validators.required]
     });
-    this.store.dispatch(loadProductosAction())
-    this.store.dispatch(loadProveedores())
-    this.store.dispatch(loadTiendasAction())
-
-
-    this.store.dispatch(loadInventarios({ tiendaId: 1 }));
-
   }
-
-
   ngOnInit() {
-
     this.store.select(selectProductoState).subscribe((state: ProductoState) => {
       this.productos = state.productos;
     });
@@ -118,11 +90,12 @@ export class DialogcreateinventarioComponent implements OnInit {
         tienda: this.inventarioForm2.value.tienda.id,
         proveedor: this.inventarioForm2.value.proveedor.id,
       }
-      console.log('F:', preparedData);
+
       this.store.dispatch(createInventario({ inventario: preparedData }));
     } else {
-      console.log('Formulario inválido');
+
     }
   }
+
 
 }

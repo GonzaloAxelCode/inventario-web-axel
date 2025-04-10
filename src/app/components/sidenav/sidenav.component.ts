@@ -1,3 +1,4 @@
+import { SidebarService } from '@/app/services/ui/sidebar-service.service';
 import { clearTokensAction } from '@/app/state/actions/auth.actions';
 import { AppState } from '@/app/state/app.state';
 import { selectAuth } from '@/app/state/selectors/auth.selectors';
@@ -6,23 +7,24 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { Router, RouterLinkActive, RouterLinkWithHref, RouterModule } from '@angular/router';
-import { WA_LOCAL_STORAGE, WA_WINDOW } from '@ng-web-apis/common';
 import { select, Store } from '@ngrx/store';
-import { tuiAsPortal } from '@taiga-ui/cdk';
 import {
-  TUI_DARK_MODE, TUI_DARK_MODE_KEY,
+  TuiAppearance,
+  TuiButton,
   TuiDataList,
+  TuiDialogService,
   TuiDropdown,
-  TuiDropdownService,
   TuiIcon,
-  TuiRoot,
+  TuiPopup,
   TuiTextfield
 } from '@taiga-ui/core';
 import {
+  TuiDrawer,
   TuiTabs
 } from '@taiga-ui/kit';
-import { TuiNavigation } from '@taiga-ui/layout';
+import { TuiHeader, TuiNavigation } from '@taiga-ui/layout';
 import { map, Observable } from 'rxjs';
+import { HeaderComponent } from "../header/header.component";
 
 @Component({
   selector: 'app-sidenav',
@@ -31,21 +33,23 @@ import { map, Observable } from 'rxjs';
     MatButtonModule, RouterModule,
     FormsModule,
     NgIf,
-    TuiRoot,
     TuiDataList,
     TuiDropdown,
     TuiNavigation,
     TuiTabs,
-    TuiTextfield, RouterLinkActive, RouterLinkWithHref, TuiIcon],
+    TuiTextfield, RouterLinkActive, RouterLinkWithHref, TuiIcon, HeaderComponent,
+
+    TuiDrawer, TuiButton, TuiAppearance,
+    TuiHeader,
+    TuiPopup,],
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDropdownService, tuiAsPortal(TuiDropdownService)],
-
 })
 export class SidenavComponent {
   isAuthenticated$: Observable<any>;
-  constructor(private store: Store<AppState>, public router: Router) {
+
+  constructor(private store: Store<AppState>, public router: Router, public sidebarService: SidebarService) {
 
     this.isAuthenticated$ = this.store.select(selectAuth).pipe(
       map(authState => authState.isAuthenticated)
@@ -66,15 +70,12 @@ export class SidenavComponent {
   isActiveRoute(route: string): boolean {
     return this.router.url === route;
   }
+  protected readonly dialogs = inject(TuiDialogService);
 
-  private readonly key = inject(TUI_DARK_MODE_KEY);
-  private readonly storage = inject(WA_LOCAL_STORAGE);
-  private readonly media = inject(WA_WINDOW).matchMedia('(prefers-color-scheme: dark)');
 
-  protected readonly darkMode = inject(TUI_DARK_MODE);
+  open = this.sidebarService.open
+  public onClose(): void {
+    this.open.set(false);
 
-  protected reset(): void {
-    this.darkMode.set(this.media.matches);
-    this.storage.removeItem(this.key);
   }
 }

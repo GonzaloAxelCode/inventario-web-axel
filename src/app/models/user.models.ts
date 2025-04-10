@@ -42,7 +42,7 @@ export interface UserPermissions {
 export interface CreateUser {
     username: string;
     password: string;
-    first_name?: string; // Opcional
-    last_name?: string;  // Opcional
+    first_name?: string;
+    last_name?: string;
     is_active: boolean;
 }

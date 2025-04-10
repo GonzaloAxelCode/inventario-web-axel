@@ -1,11 +1,11 @@
-import { User } from '@/app/models/user.models';
+import { User, UserPermissions } from '@/app/models/user.models';
 import { createAction, props } from '@ngrx/store';
 
 export enum ActionTypes {
     LOAD_USERS = 'LOAD_USERS',
     LOAD_USERS_SUCCESS = 'LOAD_USERS_SUCCESS',
     LOAD_USERS_FAIL = 'LOAD_USERS_FAIL',
-    LOAD_USER = 'LOAD_USER',  // Nueva acción para obtener un usuario
+    LOAD_USER = 'LOAD_USER',
     LOAD_USER_SUCCESS = 'LOAD_USER_SUCCESS',
     LOAD_USER_FAIL = 'LOAD_USER_FAIL',
     CREATE_USER = 'CREATE_USER',
@@ -20,9 +20,12 @@ export enum ActionTypes {
     DELETE_USER = 'DELETE_USER',
     DELETE_USER_SUCCESS = 'DELETE_USER_SUCCESS',
     DELETE_USER_FAIL = 'DELETE_USER_FAIL',
+    UPDATE_PERMISSIONS_USER = 'UPDATE_PERMISSIONS_USER',
+    UPDATE_PERMISSIONS_USER_SUCCESS = 'UPDATE_PERMISSIONS_USER_SUCCESS',
+    UPDATE_PERMISSIONS_USER_FAIL = 'UPDATE_PERMISSIONS_USER_FAIL',
 }
 
-// Cargar usuarios
+
 export const loadUsersAction = createAction(ActionTypes.LOAD_USERS);
 
 export const loadUsersSuccess = createAction(
@@ -35,7 +38,7 @@ export const loadUsersFail = createAction(
     props<{ error: any }>()
 );
 
-// Crear usuario
+
 export const createUserAction = createAction(
     ActionTypes.CREATE_USER,
     props<{ user: Partial<User> }>()
@@ -51,7 +54,7 @@ export const createUserFail = createAction(
     props<{ error: any }>()
 );
 
-// Actualizar usuario
+
 export const updateUserAction = createAction(
     ActionTypes.UPDATE_USER,
     props<{ user: Partial<User> }>()
@@ -67,15 +70,15 @@ export const updateUserFail = createAction(
     props<{ error: any }>()
 );
 
-// Desactivar usuario
+
 export const desactivateUserAction = createAction(
     ActionTypes.DESACTIVATE_USER,
-    props<{ id: number; is_active: boolean }>()
+    props<{ id: any; is_active: boolean }>()
 );
 
 export const desactivateUserSuccess = createAction(
     ActionTypes.DESACTIVATE_USER_SUCCESS,
-    props<{ id: number }>()
+    props<{ id: any, is_active: boolean }>()
 );
 
 export const desactivateUserFail = createAction(
@@ -83,7 +86,7 @@ export const desactivateUserFail = createAction(
     props<{ error: any }>()
 );
 
-// Eliminar usuario
+
 export const deleteUserAction = createAction(
     ActionTypes.DELETE_USER,
     props<{ id: number }>()
@@ -98,7 +101,7 @@ export const deleteUserFail = createAction(
     ActionTypes.DELETE_USER_FAIL,
     props<{ error: any }>()
 );
-// Obtener un solo usuario por ID
+
 export const loadUserAction = createAction(
     ActionTypes.LOAD_USER,
 );
@@ -110,5 +113,21 @@ export const loadUserSuccess = createAction(
 
 export const loadUserFail = createAction(
     ActionTypes.LOAD_USER_FAIL,
+    props<{ error: any }>()
+);
+
+
+export const updateUserPermissionsAction = createAction(
+    ActionTypes.UPDATE_PERMISSIONS_USER,
+    props<{ id: any; permissions: Partial<UserPermissions> }>()
+);
+
+export const updateUserPermissionsSuccess = createAction(
+    ActionTypes.UPDATE_PERMISSIONS_USER_SUCCESS,
+    props<{ id: any; permissions: Partial<UserPermissions> }>()
+);
+
+export const updateUserPermissionsFail = createAction(
+    ActionTypes.UPDATE_PERMISSIONS_USER_FAIL,
     props<{ error: any }>()
 );

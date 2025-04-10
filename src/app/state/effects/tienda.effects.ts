@@ -27,7 +27,7 @@ export class TiendaEffects {
                         return loadTiendasSuccess({ tiendas });
                     }),
                     catchError(error => {
-                        console.log(error)
+
                         return of(loadTiendasFail({ error }));
                     })
                 )

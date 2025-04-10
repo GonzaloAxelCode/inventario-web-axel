@@ -1,4 +1,5 @@
-<form [formGroup]="permissionsForm" class="wrapper grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 pt-4 text-white p-3" (ngSubmit)="onSubmit()">
+<form [formGroup]="permissionsForm" class="wrapper grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 pt-4 text-white p-3">
+  
   <!-- Sección: Ventas -->
   <div>
     <h3 class="text-xl font-semibold mb-4 border-b border-neutral-700 pb-2">Ventas</h3>
@@ -12,7 +13,7 @@
         <input tuiSwitch type="checkbox" formControlName="can_cancel_sale" />
       </label>
       <label class="flex items-center justify-between p-3 bg-neutral-800 rounded-lg shadow-sm">
-        <span>Puede ver ventas</span>
+        <span>Puede ver ventas</span> 
         <input tuiSwitch type="checkbox" formControlName="view_sale" />
       </label>
     </div>
@@ -55,7 +56,7 @@
       </label>
       <label class="flex items-center justify-between p-3 bg-neutral-800 rounded-lg shadow-sm">
         <span>Puede modificar productos</span>
-        <input tuiSwitch type="checkbox" formControlName="can_modify_product" />
+        <input tuiSwitch type="checkbox" formControlName="can_update_product" />
       </label>
       <label class="flex items-center justify-between p-3 bg-neutral-800 rounded-lg shadow-sm">
         <span>Puede eliminar productos</span>
@@ -114,10 +115,27 @@
     </div>
   </div>
 
-  <!-- Botón para enviar -->
-  <div class="col-span-full mt-6">
-    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg">
-      Guardar permisos
-    </button>
+  <!-- Sección: Tiendas -->
+  <div>
+    <h3 class="text-xl font-semibold mb-4 border-b border-neutral-700 pb-2">Tiendas</h3>
+    <div class="space-y-3">
+      <label class="flex items-center justify-between p-3 bg-neutral-800 rounded-lg shadow-sm">
+        <span>Puede crear una tienda</span>
+        <input tuiSwitch type="checkbox" formControlName="can_create_store" />
+      </label>
+      <label class="flex items-center justify-between p-3 bg-neutral-800 rounded-lg shadow-sm">
+        <span>Puede modificar una tienda</span>
+        <input tuiSwitch type="checkbox" formControlName="can_modify_store" />
+      </label>
+      <label class="flex items-center justify-between p-3 bg-neutral-800 rounded-lg shadow-sm">
+        <span>Puede eliminar una tienda</span>
+        <input tuiSwitch type="checkbox" formControlName="can_delete_store" />
+      </label>
+      <label class="flex items-center justify-between p-3 bg-neutral-800 rounded-lg shadow-sm">
+        <span>Puede ver tiendas</span>
+        <input tuiSwitch type="checkbox" formControlName="view_store" />
+      </label>
+    </div>
   </div>
+
 </form>

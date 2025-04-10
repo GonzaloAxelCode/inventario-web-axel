@@ -1,16 +1,20 @@
 import { ConsultaService } from '@/app/services/consultas.service';
-import { DialogService } from '@/app/services/ui/dialog.service';
-import { crearVenta } from '@/app/state/actions/venta.actions';
+import { DialogVentaDetailService } from '@/app/services/dialogs-services/dialog-venta-detail.service';
+import { DialogService } from '@/app/services/dialogs-services/dialog.service';
+import { clearVentaTemporal, crearVenta } from '@/app/state/actions/venta.actions';
+import { AppState } from '@/app/state/app.state';
+import { selectVenta } from '@/app/state/selectors/venta.selectors';
 import { AsyncPipe, CommonModule, NgForOf } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, signal } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { TuiAmountPipe } from '@taiga-ui/addon-commerce';
 import { TuiTable } from '@taiga-ui/addon-table';
-import { TuiAlertService, TuiAppearance, TuiButton, TuiDataList, TuiDropdown, TuiTextfield, TuiTitle } from '@taiga-ui/core';
+import { TuiAlertService, TuiAppearance, TuiButton, TuiDataList, TuiDropdown, TuiLoader, TuiTextfield, TuiTitle } from '@taiga-ui/core';
 import { TuiDataListWrapper, TuiItemsWithMore, TuiRadio, TuiStepper } from '@taiga-ui/kit';
 import { TuiAppBar, TuiCardLarge, TuiCell, TuiHeader } from '@taiga-ui/layout';
 import { TuiInputModule, TuiSelectModule, TuiTextfieldControllerModule } from '@taiga-ui/legacy';
+import { catchError, finalize, Observable, of, timeout } from 'rxjs';
 
 @Component({
   selector: 'app-hacerventa',
@@ -35,7 +39,7 @@ import { TuiInputModule, TuiSelectModule, TuiTextfieldControllerModule } from '@
     TuiDataList, AsyncPipe, NgForOf,
     TuiCardLarge, TuiHeader, TuiCell, TuiTitle, TuiAmountPipe,
     TuiDataListWrapper, TuiSelectModule,
-    TuiTextfieldControllerModule,
+    TuiTextfieldControllerModule, TuiLoader
   ],
   providers: [
     { provide: 'Pythons', useValue: ['Python One', 'Python Two', 'Python Three'] },
@@ -45,7 +49,9 @@ import { TuiInputModule, TuiSelectModule, TuiTextfieldControllerModule } from '@
 
 
 })
-export class HacerventaComponent {
+export class HacerventaComponent implements OnInit {
+
+
   selectCurrentStep = signal("Start Up");
   protected readonly units = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
   protected value = this.units[0]!;
@@ -59,7 +65,8 @@ export class HacerventaComponent {
   tipoComprobantes = ["Boleta", "Factura", "Sin Comprobante"]
   formasPago = ["Contado"]
   protected readonly options = { updateOn: 'blur' } as const;
-  private readonly dialogService = inject(DialogService);
+  loaderSearchCliente = false;
+
 
   protected allProductsForSale: any[] = [];
   arrayCantidades = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
@@ -71,22 +78,62 @@ export class HacerventaComponent {
   protected orderBy(): number {
     return 0;
   }
+  protected loadingCreateVenta$: Observable<any>
+  protected showVentaDetailTemporary$: Observable<any>
+  private readonly store = inject(Store<AppState>);
   private readonly alerts = inject(TuiAlertService);
+  private readonly dialogService = inject(DialogService);
 
-  constructor(private fb: FormBuilder, private consultaService: ConsultaService, private store: Store, private cdr: ChangeDetectorRef) {
+  constructor(private fb: FormBuilder, private consultaService: ConsultaService, private cdr: ChangeDetectorRef) {
+    this.loadingCreateVenta$ = this.store.select(selectVenta);
+    this.showVentaDetailTemporary$ = this.store.select(selectVenta)
+
+
     this.ventaForm = this.fb.group({
-      tiendaId: [1, Validators.required],
-      usuarioId: [1, Validators.required],
-      metodoPago: ['', Validators.required],
-      formaPago: ['', Validators.required],
-      tipoComprobante: ['', Validators.required],
+      tiendaId: [1],
+      usuarioId: [5],
+      metodoPago: [this.listMetodosPago[1], Validators.required],
+      formaPago: [this.formasPago[0], Validators.required],
+      tipoComprobante: [this.tipoComprobantes[0], Validators.required],
       cliente: [null, Validators.required],
       documento_cliente: [""],
       nombre_cliente: [""],
       productos: this.fb.array([], [Validators.required, Validators.minLength(1)])
     });
     this.productosFormArray.valueChanges.subscribe(() => {
+      this.validarStock();
+
       this.calcularTotales();
+    });
+
+  }
+  ngOnInit(): void {
+    this.store.select(selectVenta).subscribe((ventaState) => {
+
+      if (ventaState.showVentaDetailTemporary) {
+        this.dialogServiceVentaDetail.open(ventaState.temporaryVenta).subscribe((result: any) => {
+          if (result) {
+            console.log("CLOSED")
+            this.store.dispatch(clearVentaTemporal())
+          }
+        });
+      }
+    });
+  }
+  validarStock(): void {
+    this.productosFormArray.controls.forEach((control, index) => {
+      const cantidad = parseInt(control.get('cantidad_final')?.value || '0');
+      const stock = parseInt(control.get('stock_actual')?.value || '0');
+
+
+      console.log({ stock_despues: stock - cantidad })
+      if (stock - cantidad < 0) {
+        console.log("Stck incifuciente")
+        control.get('cantidad_final')?.setValue(1);
+        this.alerts.open('No hay stock suficiente para agregar mas para este producto.', { label: 'Mensaje informacion', appearance: "warning" }).subscribe();
+        // aca tienes que resetear el valor de cantidad final a 1
+      }
+
     });
   }
 
@@ -94,18 +141,18 @@ export class HacerventaComponent {
     let subtotal = 0;
     let igv = 0;
     let total = 0;
-    const IGV_RATE = 0.18; // 18% IGV
+    const IGV_RATE = 0.18;
 
     this.productosFormArray.controls.forEach(control => {
       const cantidad = parseInt(control.get('cantidad_final')?.value || '0');
       const costoVenta = parseFloat(control.get('costo_venta')?.value || '0');
 
-      const valorVenta = cantidad * costoVenta; // Subtotal sin IGV
+      const valorVenta = cantidad * costoVenta;
       subtotal += valorVenta;
     });
 
-    igv = subtotal * IGV_RATE; // IGV calculado
-    total = subtotal; // El total solo es el subtotal (sin sumar el IGV)
+    igv = subtotal * IGV_RATE;
+    total = subtotal;
 
     this.salesTotals = { subtotal: total - igv, igv, total };
   }
@@ -113,33 +160,27 @@ export class HacerventaComponent {
 
   protected showDialog(): void {
     this.dialogService.open().subscribe((result: any) => {
+
       if (result) {
+        console.log(result)
         const productosArray = this.ventaForm.get('productos') as FormArray;
-
-        // Verificar si el producto ya existe en el FormArray
-        const productoExiste = productosArray.controls.some(control =>
-          control.get('inventarioId')?.value === result.id
-        );
-
+        const productoExiste = productosArray.controls.some(control => control.get('inventarioId')?.value === result.id);
         if (productoExiste) {
-
-          this.alerts
-            .open('Mensaje informacion', { label: 'Producto ya esta agregado' })
-            .subscribe();
-          return; // No agregar duplicado
+          this.alerts.open('Mensaje informacion', { label: 'Producto ya esta agregado', appearance: "warning" }).subscribe();
+          return;
         }
-
         const nuevoProducto = this.fb.group({
-          inventarioId: [result.id, Validators.required],
-          cantidad_final: ["1", [Validators.required, Validators.min(1)]], // Validación de cantidad
-          producto_nombre: [result.producto_nombre, Validators.required],
+          inventarioId: [result.id],
+          cantidad_final: ["1", [Validators.required]],
+          producto_nombre: [result.producto_nombre,],
           nombre_categoria: [result.categoria_nombre],
-          costo_venta: [result.costo_venta, Validators.required],
-          productoId: [result.producto, Validators.required]
+          costo_venta: [result.costo_venta,],
+          productoId: [result.producto.id,],
+          stock_actual: [result.cantidad]
         });
-
         productosArray.push(nuevoProducto);
         this.calcularTotales();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -148,7 +189,6 @@ export class HacerventaComponent {
     const documento = this.ventaForm.get('documento_cliente')!.value;
 
     if (!documento) {
-      console.log('Ingrese un documento válido');
       return;
     }
 
@@ -160,31 +200,35 @@ export class HacerventaComponent {
           : null;
 
     if (!consultaObservable) {
-      console.log('Número de documento inválido');
       return;
     }
 
-    consultaObservable.subscribe(
-      response => {
-        if (response?.data) {
-          console.log('Cliente encontrado:', response.data);
-          this.ventaForm.patchValue({
-            nombre_cliente: response.data.nombre_completo || response.data.nombre_o_razon_social,
-            cliente: response.data  // Guardar objeto completo si lo necesitas
-          });
-          console.log(response.data)
-          this.cdr.detectChanges();
+    this.loaderSearchCliente = true;
 
-        }
-      },
-      error => {
-        console.error('Error en la búsqueda:', error);
+    consultaObservable.pipe(
+      timeout(5000), // 5 segundos
+      catchError(error => {
+        // Si hay error o timeout, devolvemos null
+        return of(null);
+      }),
+      finalize(() => {
+        // Siempre se ejecuta, éxito o error
+        this.loaderSearchCliente = false;
+        this.cdr.detectChanges();
+      })
+    ).subscribe(response => {
+      if (response?.data) {
+        this.ventaForm.patchValue({
+          nombre_cliente: response.data.nombre_completo || response.data.nombre_o_razon_social,
+          cliente: response.data
+        });
+      } else {
         this.ventaForm.patchValue({
           nombre_cliente: '',
           cliente: null
         });
       }
-    );
+    });
   }
 
   borrarCliente() {
@@ -200,8 +244,10 @@ export class HacerventaComponent {
       const preparedData = {
         ...this.ventaForm.value,
       }
-      console.log(preparedData)
+
       this.store.dispatch(crearVenta({ venta: preparedData }));
+
+
       this.ventaForm.patchValue({
         nombre_cliente: '',
         cliente: null
@@ -213,11 +259,11 @@ export class HacerventaComponent {
     return this.ventaForm.get('productos') as FormArray<FormGroup>;
   }
   protected readonly columns = ['producto_nombre', 'cantidad_final', 'costo_venta', 'acciones'];
-  actualizarCantidad(index: number, nuevaCantidad: string) {
-    this.productosFormArray.at(index).patchValue({ cantidad_final: nuevaCantidad });
-  }
+
   eliminarProductoForm(index: number) {
     this.productosFormArray.removeAt(index);
     this.calcularTotales();
   }
+  private readonly dialogServiceVentaDetail = inject(DialogVentaDetailService);
+
 }

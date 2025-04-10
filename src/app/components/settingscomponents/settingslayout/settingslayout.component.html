@@ -42,7 +42,7 @@
                 Mis Permisos
             </a>
          
-             <a tuiTab routerLink="/settings/usermanagement" routerLinkActive="active-link">
+             <a *ngIf="user.is_superuser" tuiTab routerLink="/settings/usermanagement" routerLinkActive="active-link">
                 Gestionar Personal
             </a>
         </nav>

@@ -31,7 +31,7 @@ export class ProveedorEffects {
         private toastr: ToastrService
     ) { }
 
-    // Efecto para cargar proveedores
+
     loadProveedoresEffect = createEffect(() =>
         this.actions$.pipe(
             ofType(loadProveedores),
@@ -44,7 +44,7 @@ export class ProveedorEffects {
         )
     );
 
-    // Efecto para crear un proveedor
+
     createProveedorEffect = createEffect(() =>
         this.actions$.pipe(
             ofType(createProveedorAction),
@@ -63,7 +63,7 @@ export class ProveedorEffects {
         )
     );
 
-    // Efecto para actualizar un proveedor
+
     updateProveedorEffect = createEffect(() =>
         this.actions$.pipe(
             ofType(updateProveedorAction),
@@ -82,7 +82,7 @@ export class ProveedorEffects {
         )
     );
 
-    // Efecto para eliminar un proveedor
+
     deleteProveedorEffect = createEffect(() =>
         this.actions$.pipe(
             ofType(deleteProveedorAction),

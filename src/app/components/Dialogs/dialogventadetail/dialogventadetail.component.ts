@@ -1,16 +1,15 @@
 import { ComprobanteElectronico, Venta } from '@/app/models/venta.models';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { TuiAmountPipe } from '@taiga-ui/addon-commerce';
 import { TuiTable } from '@taiga-ui/addon-table';
-import { TuiAppearance, TuiDialogContext, TuiNumberFormat, TuiTitle } from '@taiga-ui/core';
-import { TuiCardLarge } from '@taiga-ui/layout';
+import { TuiAppearance, TuiButton, TuiDialogContext } from '@taiga-ui/core';
+import { TuiBadge, TuiChip } from '@taiga-ui/kit';
 import { injectContext } from '@taiga-ui/polymorpheus';
 
 @Component({
   selector: 'app-dialogventadetail',
   standalone: true,
-  imports: [CommonModule, TuiNumberFormat, TuiAmountPipe, TuiCardLarge, TuiAppearance, TuiTitle, TuiTable],
+  imports: [CommonModule, TuiTable, TuiButton, TuiAppearance, TuiBadge, TuiChip],
   templateUrl: './dialogventadetail.component.html',
   styleUrl: './dialogventadetail.component.scss'
 })
@@ -29,7 +28,7 @@ export class DialogventadetailComponent {
     }
   })();
   constructor() {
-    console.log(this.venta)
+
 
   }
   getValorVentaRedondeado(valor: number): string {

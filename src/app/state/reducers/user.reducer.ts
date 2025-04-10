@@ -21,6 +21,9 @@ import {
     loadUserSuccess,
     updateUserAction,
     updateUserFail,
+    updateUserPermissionsAction,
+    updateUserPermissionsFail,
+    updateUserPermissionsSuccess,
     updateUserSuccess
 } from '../actions/user.actions';
 
@@ -30,56 +33,56 @@ export interface UserState {
     loadingUsers: boolean;
     errors: any;
 }
-
+export const userInitial = {
+    id: 0,
+    username: '',
+    first_name: '',
+    last_name: '',
+    photo_url: '',
+    date_joined: new Date(),
+    is_active: false,
+    is_staff: false,
+    is_superuser: false,
+    es_empleado: false,
+    desactivate_account: false,
+    permissions: {
+        can_make_sale: false,
+        can_cancel_sale: false,
+        can_create_inventory: false,
+        can_modify_inventory: false,
+        can_update_inventory: false,
+        can_delete_inventory: false,
+        can_create_product: false,
+        can_update_product: false,
+        can_delete_product: false,
+        can_create_category: false,
+        can_modify_category: false,
+        can_delete_category: false,
+        can_create_supplier: false,
+        can_modify_supplier: false,
+        can_delete_supplier: false,
+        can_create_store: false,
+        can_modify_store: false,
+        can_delete_store: false,
+        view_sale: false,
+        view_inventory: false,
+        view_product: false,
+        view_category: false,
+        view_supplier: false,
+        view_store: false,
+    }
+}
 export const initialStateUser: UserState = {
     users: [],
     loadingUsers: false,
     errors: {},
-    user: {
-        id: 0,
-        username: '',
-        first_name: '',
-        last_name: '',
-        photo_url: '',
-        date_joined: new Date(),
-        is_active: false,
-        is_staff: false,
-        is_superuser: false,
-        es_empleado: false,
-        desactivate_account: false,
-        permissions: {
-            can_make_sale: false,
-            can_cancel_sale: false,
-            can_create_inventory: false,
-            can_modify_inventory: false,
-            can_update_inventory: false,
-            can_delete_inventory: false,
-            can_create_product: false,
-            can_update_product: false,
-            can_delete_product: false,
-            can_create_category: false,
-            can_modify_category: false,
-            can_delete_category: false,
-            can_create_supplier: false,
-            can_modify_supplier: false,
-            can_delete_supplier: false,
-            can_create_store: false,
-            can_modify_store: false,
-            can_delete_store: false,
-            view_sale: false,
-            view_inventory: false,
-            view_product: false,
-            view_category: false,
-            view_supplier: false,
-            view_store: false,
-        }
-    },
+    user: userInitial
 };
 
 export const userReducer = createReducer(
     initialStateUser,
 
-    // Cargar usuarios
+
     on(loadUsersAction, state => ({
         ...state,
         loadingUsers: true
@@ -95,7 +98,7 @@ export const userReducer = createReducer(
         loadingUsers: false
     })),
 
-    // Crear usuario
+
     on(createUserAction, state => ({
         ...state,
         loadingUsers: true
@@ -111,7 +114,7 @@ export const userReducer = createReducer(
         loadingUsers: false
     })),
 
-    // Actualizar usuario
+
     on(updateUserAction, state => ({
         ...state
     })),
@@ -124,22 +127,22 @@ export const userReducer = createReducer(
         errors: error
     })),
 
-    // Desactivar usuario
+
     on(desactivateUserAction, state => ({
         ...state
     })),
-    on(desactivateUserSuccess, (state, { id }) => ({
+    on(desactivateUserSuccess, (state, { id, is_active }) => ({
         ...state,
-        users: state.users.map(user =>
-            user.id === id ? { ...user, is_active: !user.is_active } : user
-        )
+        users: state.users.map((user) =>
+            user.id === id ? { ...user, is_active } : user
+        ),
     })),
     on(desactivateUserFail, (state, { error }) => ({
         ...state,
         errors: error
     })),
 
-    // Eliminar usuario
+
     on(deleteUserAction, state => ({
         ...state
     })),
@@ -160,7 +163,7 @@ export const userReducer = createReducer(
             accessToken: '',
         }
     }),
-    // Cargar un usuario por ID
+
     on(loadUserAction, state => ({
         ...state,
 
@@ -171,6 +174,29 @@ export const userReducer = createReducer(
 
     })),
     on(loadUserFail, (state, { error }) => ({
+        ...state,
+        errors: error,
+
+    })),
+    on(updateUserPermissionsAction, (state) => ({
+        ...state,
+    })),
+    on(updateUserPermissionsSuccess, (state, { id, permissions }) => ({
+        ...state,
+        users: state.users.map(user =>
+            user.id === id
+                ? {
+                    ...user,
+                    permissions: {
+                        ...user.permissions,
+                        ...permissions,
+                    },
+                }
+                : user
+        ),
+    })),
+
+    on(updateUserPermissionsFail, (state, { error }) => ({
         ...state,
         errors: error,
 

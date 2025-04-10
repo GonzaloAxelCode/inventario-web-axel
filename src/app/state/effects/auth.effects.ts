@@ -21,14 +21,14 @@ export class AuthEffects {
 
     constructor(private actions$: Actions, private authService: AuthService) { }
 
-    // eslint-disable-next-line unicorn/consistent-function-scoping
+
     loginEffect = createEffect(() =>
         this.actions$.pipe(
             ofType(loginInAction),
             exhaustMap(({ username, password }) =>
                 this.authService.fetchCreateToken({ username, password }).pipe(
                     map((response: any) => {
-                        console.log(response)
+
                         saveAuthDataToLocalStorage({
                             accessToken: response?.access,
                             refreshToken: response?.refresh,
@@ -63,7 +63,7 @@ export class AuthEffects {
         )
     );
 
-    // eslint-disable-next-line unicorn/consistent-function-scoping
+
     checkTokenEffect = createEffect(() =>
         this.actions$.pipe(
             ofType(checkTokenAction),

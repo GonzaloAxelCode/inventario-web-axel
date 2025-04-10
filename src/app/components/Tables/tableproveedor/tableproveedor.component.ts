@@ -1,15 +1,16 @@
 import { Proveedor } from '@/app/models/proveedor.models';
-import { loadProveedores } from '@/app/state/actions/proveedor.actions';
+import { DialogUpdateProveedorService } from '@/app/services/dialogs-services/dialog-updateproveedor.service';
 import { AppState } from '@/app/state/app.state';
 import { ProveedorState } from '@/app/state/reducers/proveedor.reducer';
 import { selectProveedores } from '@/app/state/selectors/proveedor.selectors';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { TuiResponsiveDialogService } from '@taiga-ui/addon-mobile';
 import { TuiTable } from '@taiga-ui/addon-table';
-import { TuiAppearance, TuiButton, tuiDialog } from '@taiga-ui/core';
-import { TuiBadge, TuiRadio } from '@taiga-ui/kit';
+import { TuiAlertService, TuiAppearance, TuiButton, tuiDialog } from '@taiga-ui/core';
+import { TUI_CONFIRM, TuiBadge, TuiConfirmData, TuiRadio } from '@taiga-ui/kit';
 import { Observable } from 'rxjs';
 import { DialogcreateproveedorComponent } from '../../Dialogs/dialogcreateproveedor/dialogcreateproveedor.component';
 @Component({
@@ -44,16 +45,12 @@ export class TableproveedorComponent implements OnInit {
     { key: 'direccion', label: 'Direccion' },
     { key: 'telefono', label: 'Telefono' },
     { key: 'tipo_producto', label: 'Tipos de producto' },
-
-
-
-
   ];
   filteredData: any = []
   allColumnKeys = this.allColumns.map(c => c.key);
   displayedColumns = [...this.allColumnKeys];
   ngOnInit() {
-    this.store.dispatch(loadProveedores());
+
     this.proveedoresState$ = this.store.select(selectProveedores);
 
   }
@@ -69,5 +66,37 @@ export class TableproveedorComponent implements OnInit {
         console.info('Dialog closed');
       },
     });
+  }
+  private readonly dialogService = inject(DialogUpdateProveedorService);
+  protected showDialogUpdate(): void {
+    this.dialogService.open({}).subscribe((result: any) => {
+
+    });
+  }
+  private readonly dialogs = inject(TuiResponsiveDialogService);
+  private readonly alerts = inject(TuiAlertService);
+  protected onDeleteProveedor(id: any): void {
+    const data: TuiConfirmData = {
+      content: '¿Estás seguro de que deseas eliminar esta ?',
+      yes: 'Eliminar',
+      no: 'Cancelar',
+    };
+
+    this.dialogs
+      .open<boolean>(TUI_CONFIRM, {
+        label: 'Confirmación de Eliminación',
+        size: 's',
+        data,
+      })
+      .subscribe((confirm) => {
+        if (confirm) {
+
+
+          this.alerts.open(' eliminado exitosamente.').subscribe();
+        } else {
+
+          this.alerts.open('Eliminación cancelada.').subscribe();
+        }
+      });
   }
 }

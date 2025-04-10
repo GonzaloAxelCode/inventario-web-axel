@@ -8,8 +8,13 @@ import {
     createProductoAction, createProductoFail, createProductoSuccess,
     deleteProductoAction, deleteProductoFail, deleteProductoSuccess,
     loadProductosAction, loadProductosFail, loadProductosSuccess,
+    searchProductoFail,
+    searchProductosAction,
+    searchProductoSuccess,
     updateProductoAction, updateProductoFail, updateProductoSuccess
 } from '../actions/producto.actions';
+
+
 
 @Injectable()
 export class ProductoEffects {
@@ -23,10 +28,18 @@ export class ProductoEffects {
     loadProductosEffect = createEffect(() =>
         this.actions$.pipe(
             ofType(loadProductosAction),
-            exhaustMap(() =>
-                this.productoService.fetchLoadProductos().pipe(
-                    map(productos => loadProductosSuccess({ productos })),
-                    catchError(error => {
+            exhaustMap((action) =>
+                this.productoService.fetchLoadProductos(action.page || 1, action.page_size || 5).pipe(
+                    map((response) =>
+                        loadProductosSuccess({
+                            productos: response.results,
+                            next: response.next,
+                            previous: response.previous,
+                            index_page: response.index_page,
+                            length_pages: response.length_pages
+                        })
+                    ),
+                    catchError((error) => {
                         console.error(error);
                         return of(loadProductosFail({ error }));
                     })
@@ -34,6 +47,8 @@ export class ProductoEffects {
             )
         )
     );
+
+
 
     createProductoEffect = createEffect(() =>
         this.actions$.pipe(
@@ -58,13 +73,37 @@ export class ProductoEffects {
             ofType(updateProductoAction),
             exhaustMap(({ producto }) =>
                 this.productoService.updateProducto(producto).pipe(
-                    map(updatedProducto => {
+                    map(res => {
                         this.toastr.success('Producto actualizado exitosamente', 'Éxito');
-                        return updateProductoSuccess({ producto: updatedProducto });
+                        return updateProductoSuccess({ producto });
                     }),
                     catchError(error => {
                         this.toastr.error('Error al actualizar el producto', 'Error');
                         return of(updateProductoFail({ error }));
+                    })
+                )
+            )
+        )
+    );
+
+
+    searchProductosEffect = createEffect(() =>
+        this.actions$.pipe(
+            ofType(searchProductosAction),
+            exhaustMap((action) =>
+                this.productoService.searchProducts(action.query, action.page || 1, action.page_size || 5).pipe(
+                    map(response => {
+                        console.log(response)
+                        return searchProductoSuccess({
+                            productos: response.results, search_products_found: response.search_products_found, count: response.count, next: response.next,
+                            previous: response.previous,
+                            index_page: response.index_page,
+                            length_pages: response.length_pages
+                        });
+                    }),
+                    catchError(error => {
+                        this.toastr.error('Error al buscar los productos', 'Error');
+                        return of(searchProductoFail({ error }));
                     })
                 )
             )

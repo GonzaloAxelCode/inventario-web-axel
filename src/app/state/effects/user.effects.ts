@@ -13,7 +13,7 @@ import {
     loadUserFail,
     loadUsersAction, loadUsersFail, loadUsersSuccess,
     loadUserSuccess,
-    updateUserAction, updateUserFail, updateUserSuccess
+    updateUserAction, updateUserFail, updateUserPermissionsAction, updateUserPermissionsFail, updateUserPermissionsSuccess, updateUserSuccess
 } from '../actions/user.actions';
 import { AppState } from '../app.state';
 
@@ -24,21 +24,21 @@ export class UserEffects {
         private actions$: Actions,
         private userService: UserService,
         private store: Store<AppState>,
-        private toastr: ToastrService // Servicio de notificaciones
+        private toastr: ToastrService
     ) { }
     loadUserEffect = createEffect(() =>
         this.actions$.pipe(
-            ofType(loadUserAction), // Nueva acción para cargar un usuario por ID
+            ofType(loadUserAction),
             exhaustMap(() =>
                 this.userService.fetchCurrentUser().pipe(
-                    map((data: any) => loadUserSuccess({ user: data.user })),
+                    map((data: any) => loadUserSuccess({ user: data })),
                     catchError(error => of(loadUserFail({ error })))
                 )
             )
         )
     );
 
-    // Efecto para cargar usuarios
+
     loadUsersEffect = createEffect(() =>
         this.actions$.pipe(
             ofType(loadUsersAction),
@@ -51,7 +51,7 @@ export class UserEffects {
         )
     );
 
-    // Efecto para crear un usuario
+
     createUserEffect = createEffect(() =>
         this.actions$.pipe(
             ofType(createUserAction),
@@ -70,7 +70,7 @@ export class UserEffects {
         )
     );
 
-    // Efecto para actualizar un usuario
+
     updateUserEffect = createEffect(() =>
         this.actions$.pipe(
             ofType(updateUserAction),
@@ -88,8 +88,24 @@ export class UserEffects {
             )
         )
     );
+    updateUserPermisionsEffect = createEffect(() =>
+        this.actions$.pipe(
+            ofType(updateUserPermissionsAction),
+            exhaustMap(({ id, permissions }) =>
+                this.userService.updateUserPermissions(id, permissions).pipe(
+                    map(() => {
+                        this.toastr.success('Permisos actualizados exitosamente', 'Éxito');
+                        return updateUserPermissionsSuccess({ id, permissions });
+                    }),
+                    catchError(error => {
+                        this.toastr.error('Error al actualizar los permisos', 'Error');
+                        return of(updateUserPermissionsFail({ error }));
+                    })
+                )
+            )
+        )
+    );
 
-    // Efecto para desactivar un usuario
     desactivateUserEffect = createEffect(() =>
         this.actions$.pipe(
             ofType(desactivateUserAction),
@@ -97,7 +113,8 @@ export class UserEffects {
                 this.userService.desactivateUser(id, is_active).pipe(
                     map(() => {
                         this.toastr.success('Usuario actualizado', 'Éxito');
-                        return desactivateUserSuccess({ id });
+
+                        return desactivateUserSuccess({ id, is_active });
                     }),
                     catchError(error => {
                         this.toastr.error('Error al actualizar el usuario', 'Error');
@@ -108,7 +125,7 @@ export class UserEffects {
         )
     );
 
-    // Efecto para eliminar un usuario
+
     deleteUserEffect = createEffect(() =>
         this.actions$.pipe(
             ofType(deleteUserAction),

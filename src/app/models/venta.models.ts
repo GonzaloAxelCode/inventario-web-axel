@@ -4,14 +4,14 @@ export interface Venta {
     id: number;
     usuario: number;
     tienda: number;
-    fecha_hora: string; // Formato ISO 8601 (YYYY-MM-DD HH:mm:ss)
+    fecha_hora: string;
     fecha_realizacion?: string | null;
     fecha_cancelacion?: string | null;
     metodo_pago: string;
     estado: string;
     activo: boolean;
     tipo_comprobante: string
-    productos: Partial<ProductSale>[] // Relación con productos vendidos
+    productos: Partial<ProductSale>[]
     subtotal: number;
     gravado_total: number
     igv_total: number
@@ -23,24 +23,24 @@ export interface Venta {
 
 export interface ComprobanteElectronico {
     tipo_comprobante: string;
-    serie: string; // Ejemplo: B001, F001
+    serie: string;
     correlativo: string
-    numero: string; // Ejemplo: 00000001
-    moneda: string; // Ejemplo: 00000001
-    // Datos del cliente
-    tipo_documento_cliente: string; // Ejemplo: "1" (DNI)
+    numero: string;
+    moneda: string;
+
+    tipo_documento_cliente: string;
     numero_documento_cliente: string;
     nombre_cliente: string;
-    // Totales
+
     gravadas: number;
     igv: number;
     valorVenta: number;
     sub_total: number;
     total: number;
-    // Otros
+
     leyenda: string;
     estado_sunat: string;
-    // URLs de documentos generados
+
     xml_url: string;
     pdf_url: string;
     cdr_url: string;
@@ -67,14 +67,14 @@ export interface VentaProducto {
     producto: number;
     producto_nombre: string;
     cantidad: number;
-    valor_unitario: number; // Precio sin IGV
-    valor_venta: number; // Total sin IGV
-    base_igv: number; // Base imponible
-    porcentaje_igv: number; // Ej: 18%
-    igv: number; // Monto del IGV
-    tipo_afectacion_igv: string; // Código de afectación IGV
-    total_impuestos: number; // Total de impuestos
-    precio_unitario: number; // Precio final con IGV
+    valor_unitario: number;
+    valor_venta: number;
+    base_igv: number;
+    porcentaje_igv: number;
+    igv: number;
+    tipo_afectacion_igv: string;
+    total_impuestos: number;
+    precio_unitario: number;
 }
 
 export interface CreateVenta {
@@ -104,22 +104,22 @@ export interface ClienteTemp {
 
 export interface ProductoVenta {
     inventarioId: number;
-    cantidad_final: string; // Considera cambiar a number si se usa en cálculos
+    cantidad_final: string;
     producto_nombre: string;
-    costo_venta: string; // Considera cambiar a number si se usa en cálculos
+    costo_venta: string;
     productoId: number;
 }
 export interface ProductSale {
     id: number;
-    producto: number; // ID del producto
+    producto: number;
     producto_nombre: string;
     cantidad: number;
-    valor_unitario: number; // Sin IGV
+    valor_unitario: number;
     valor_venta: number;
     base_igv: number;
     porcentaje_igv: number;
     igv: number;
     tipo_afectacion_igv: string;
     total_impuestos: number;
-    precio_unitario: number; // Con IGV
+    precio_unitario: number;
 }

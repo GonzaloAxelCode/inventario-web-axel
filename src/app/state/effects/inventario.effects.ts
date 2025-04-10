@@ -30,6 +30,12 @@ import {
     loadInventariosFail,
     loadInventariosSuccess,
 
+    searchInventarioFail,
+
+    searchInventarios,
+
+    searchInventarioSuccess,
+
     updateStock,
 
     updateStockFail,
@@ -53,11 +59,18 @@ export class InventarioEffects {
     loadInventariosEffect = createEffect(() =>
         this.actions$.pipe(
             ofType(loadInventarios),
-            exhaustMap(({ tiendaId }) =>
-                this.inventarioService.fetchInventariosPorTienda(tiendaId).pipe(
-                    map(inventarios => {
-                        console.log(inventarios)
-                        return loadInventariosSuccess({ inventarios })
+            exhaustMap((action) =>
+                this.inventarioService.fetchInventariosPorTienda(action.tiendaId, action.page || 1, action.page_size || 5).pipe(
+                    map(response => {
+
+                        return loadInventariosSuccess({
+                            inventarios: response.results,
+                            next: response.next,
+                            previous: response.previous,
+                            index_page: response.index_page,
+                            length_pages: response.length_pages
+
+                        })
                     }),
                     catchError(error => {
                         console.error(error);
@@ -147,4 +160,30 @@ export class InventarioEffects {
         )
     );
 
+
+    searchProductosEffect = createEffect(() =>
+        this.actions$.pipe(
+            ofType(searchInventarios),
+            exhaustMap((action) =>
+                this.inventarioService.fetchSearchInventarios(action.query, action.page || 1, action.page_size || 5, action.tiendaId).pipe(
+                    map(response => {
+                        console.log(response)
+                        return searchInventarioSuccess({
+                            inventarios: response.results,
+                            search_products_found: response.search_products_found,
+                            count: response.count,
+                            next: response.next,
+                            previous: response.previous,
+                            index_page: response.index_page,
+                            length_pages: response.length_pages
+                        });
+                    }),
+                    catchError(error => {
+                        this.toastr.error('Error al buscar los inventarios', 'Error');
+                        return of(searchInventarioFail({ error }));
+                    })
+                )
+            )
+        )
+    );
 }

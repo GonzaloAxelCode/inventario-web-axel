@@ -1,66 +1,47 @@
-<table mat-table [dataSource]="dataSource" class="">
-
-  <!-- ID Column -->
-  <ng-container matColumnDef="id">
-    <th mat-header-cell *matHeaderCellDef> ID </th>
-    <td mat-cell *matCellDef="let element"> {{ element.id }} </td>
-  </ng-container>
-
-  <!-- Nombre Column -->
-  <ng-container matColumnDef="nombre">
-    <th mat-header-cell *matHeaderCellDef> Nombre </th>
-    <td mat-cell *matCellDef="let element">
-      <ng-container *ngIf="editingId === element.id; else viewNombre">
-        <input matInput [(ngModel)]="editedCategoria.nombre" class="editable-input">
-      </ng-container>
-      <ng-template #viewNombre>{{ element.nombre }}</ng-template>
-    </td>
-  </ng-container>
-
-  <!-- Descripción Column -->
-  <ng-container matColumnDef="descripcion">
-    <th mat-header-cell *matHeaderCellDef> Descripción </th>
-    <td mat-cell *matCellDef="let element">
-      <ng-container *ngIf="editingId === element.id; else viewDescripcion">
-        <input matInput [(ngModel)]="editedCategoria.descripcion" class="editable-input">
-      </ng-container>
-      <ng-template #viewDescripcion>{{ element.descripcion }}</ng-template>
-    </td>
-  </ng-container>
-
-  <!-- Activo Column -->
-  <ng-container matColumnDef="activo">
-    <th mat-header-cell *matHeaderCellDef> Activo </th>
-    <td mat-cell *matCellDef="let element"> 
-      <mat-icon *ngIf="element.activo" color="primary">check_circle</mat-icon>
-      <mat-icon *ngIf="!element.activo" color="warn">cancel</mat-icon>
-    </td>
-  </ng-container>
-
-  <!-- Acciones Column -->
-  <ng-container matColumnDef="acciones">
-    <th mat-header-cell *matHeaderCellDef> Acciones </th>
-    <td mat-cell *matCellDef="let element">
-      <ng-container *ngIf="editingId === element.id; else viewActions">
-        <button mat-icon-button color="primary" (click)="onUpdateCategoria()">
-          <mat-icon>check</mat-icon>
-        </button>
-        <button mat-icon-button color="warn" (click)="onCancelEdit()">
-          <mat-icon>close</mat-icon>
-        </button>
-      </ng-container>
-      <ng-template #viewActions>
-        <button mat-icon-button color="accent" (click)="onEditCategoria(element)">
-          <mat-icon>edit</mat-icon>
-        </button>
-        <button mat-icon-button color="warn" (click)="onDeleteCategoria(element.id)">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </ng-template>
-    </td>
-  </ng-container>
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
+<table tuiTable size="s">
+  <thead>
+    <tr>
+      <th tuiTh>ID</th>
+      <th tuiTh>Nombre</th>
+      <th tuiTh>Descripción</th>
+      <th tuiTh>Abreviado</th>
+      <th tuiTh>Acciones</th>
+    </tr>
+  </thead>
+  <tbody tuiTbody *ngIf="(selectCategorias$| async)?.categorias?.length">
+    <tr *ngFor="let categoria of (selectCategorias$| async)?.categorias">
+      <td tuiTd>{{ categoria.id }}</td>
+      
+      <td tuiTd>
+      
+       {{ categoria.nombre }}
+      </td>
+      
+      <td tuiTd>
+       
+       {{ categoria.descripcion }}
+      </td>
+      
+      <td tuiTd>
+      
+       {{ categoria.siglas_nombre_categoria }}
+      </td>
+      
+      <td tuiTd>
+        <div class="flex gap-2">
+         
+        
+          <button appearance="positive" iconStart="@tui.pencil" tuiButton  type="button" (click)="showDialogUpdate(categoria)"
+                     >
+                     Actualizar
+                    </button>
+                    <button appearance="error" (click)="onDeleteCategoria(categoria.id)" iconStart="@tui.x" tuiButton type="button"
+                        >
+                        Desactivar
+                    </button>
+        
+        </div>
+      </td>
+    </tr>
+  </tbody>
 </table>

@@ -1,43 +1,6 @@
 
 
 @import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@100..900&display=swap');
-nav a{
-  margin-top: 3px;
-}
-
-.content-body-loader {
-	background: black;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-
-	height: 100vh;
-	margin: 0;
-
-	.wrapper {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		gap: 1em;
-		transition: 2s ease;
-		cursor: progress;
-	}
-	.wrapper:hover {
-		transform: scale(1.2);
-	}
-
-	@keyframes move {
-		0% {
-			transform: translateX(50%);
-		}
-		50% {
-			transform: translateX(-50%);
-		}
-		100% {
-			transform: translateX(50%);
-		}
-	}
-}
 @import url("https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;700&display=swap");
 
 body {
@@ -45,65 +8,15 @@ body {
   grid: [stack] 1fr / min-content [stack] 1fr;
   font-family: "Rubik", sans-serif;
 }
-
-@media (max-width: 640px) {
-  body > aside,
-  body > main {
-    grid-area: stack;
-  }
+nav a{
+  margin-top: 3px;
 }
-
-#sidenav-open {
-  --easeOutExpo: cubic-bezier(0.16, 1, 0.3, 1);
-  --duration: 0.6s;
-  display: grid;
-  grid-template-columns: [nav] 1fr [escape] 2fr;
-}
-
-@media (max-width: 640px) {
-  #sidenav-open {
-    position: sticky;
+.drawer {
     top: 0;
-    max-height: 100vh;
-    overflow: hidden auto;
-    overscroll-behavior: contain;
-    visibility: hidden;
-    transform: translateX(-110vw);
-    will-change: transform;
-    transition: transform var(--duration) var(--easeOutExpo),
-      visibility 0s linear var(--duration);
-  }
+    border-radius: 0;
+    
 }
 
-@media only screen and (max-width: 640px) {
-  #sidenav-open:target {
-    visibility: visible;
-    transform: translateX(0);
-    transition: transform var(--duration) var(--easeOutExpo);
-  }
-
-  #sidenav-open:target ~ main {
-    filter: blur(0.5em);
-    z-index: -1;
-  }
-}
-
-.grid-cols-auto-1fr-auto {
-  grid-template-columns: auto 1fr auto;
-}
-
-#profile-progress {
- 
-  animation: thickening 1s 0.5s linear normal;
-
-  border-radius: 50%;
-}
-
-@keyframes thickening {
-  from {
-    border-width: 0.2em;
-  }
-  to {
-    border-width: 1em;
-  }
+.header {
+    position: sticky;
 }

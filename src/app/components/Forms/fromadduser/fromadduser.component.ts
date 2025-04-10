@@ -32,7 +32,7 @@ export class FromadduserComponent {
 
   onSubmit() {
     if (this.userForm.valid) {
-      console.log(this.userForm.value);
+
       const newUser = this.userForm.value;
       this.store.dispatch(createUserAction({
         user: {

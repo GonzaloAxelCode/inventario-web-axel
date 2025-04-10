@@ -1,6 +1,5 @@
 import { User } from '@/app/models/user.models';
 import {
-  loadUsersAction,
   updateUserAction
 } from '@/app/state/actions/user.actions';
 import { AppState } from '@/app/state/app.state';
@@ -29,7 +28,7 @@ export class TableUsersComponent implements OnInit {
   constructor(private store: Store<AppState>, private cdRef: ChangeDetectorRef) { }
 
   ngOnInit() {
-    this.store.dispatch(loadUsersAction());
+
     this.store.select(selectUser).subscribe(usersState => {
       this.dataSource.data = usersState.users;
     });
@@ -41,7 +40,7 @@ export class TableUsersComponent implements OnInit {
   }
 
   onUpdateUser() {
-    console.log(this.editedUser)
+
     this.store.dispatch(updateUserAction({ user: this.editedUser }))
     this.editingId = null;
 

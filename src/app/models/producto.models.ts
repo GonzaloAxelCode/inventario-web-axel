@@ -23,9 +23,22 @@ export type ProductoCreate = Omit<Producto, 'id' |
 
 
 export interface ProductoState {
+    loadingSearch: boolean,
+    count: number,
+    search_products_found: string,
+    next: any,
+    previous: any,
+    index_page: any,
+    length_pages: any,
     productos: Producto[];
+    productos_search: Producto[];
     loadingProductos?: boolean;
     errors?: any;
+
+    loadingCreate: boolean;
+    loadingUpdate: boolean;
+    loadingDeactivate: boolean;
+    loadingDelete: boolean;
 }
 
 

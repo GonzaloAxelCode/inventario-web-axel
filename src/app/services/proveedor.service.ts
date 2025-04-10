@@ -4,6 +4,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { URL_BASE } from './utils/endpoints';
+import { printError } from './utils/print-errors';
 
 @Injectable({
     providedIn: 'root',
@@ -21,7 +22,7 @@ export class ProveedorService {
     createProveedor(proveedor: ProveedorCreate): Observable<Proveedor> {
         return this.http.post<Proveedor>(`${this.siteURL}/proveedores/create/`, proveedor).pipe(
             catchError(error => {
-                console.log(error);
+                printError(error);
                 return throwError(error);
             })
         );
@@ -30,7 +31,7 @@ export class ProveedorService {
     updateProveedor(proveedor: Proveedor): Observable<Proveedor> {
         return this.http.put<Proveedor>(`${this.siteURL}/proveedores/update/${proveedor.id}/`, proveedor).pipe(
             catchError(error => {
-                console.log(error);
+                printError(error);
                 return throwError(error);
             })
         );
@@ -39,7 +40,7 @@ export class ProveedorService {
     deleteProveedor(id: number): Observable<any> {
         return this.http.delete(`${this.siteURL}/proveedores/delete/${id}/`).pipe(
             catchError(error => {
-                console.log(error);
+                printError(error);
                 return throwError(error);
             })
         );

@@ -17,7 +17,7 @@
 
 </div>
 
-<table tuiTable [style.width.rem]="58">
+<table tuiTable size="s">
   <thead>
     <tr>
       <th *ngFor="let column of allColumns" tuiTh>{{ column.label }}</th>
@@ -39,13 +39,13 @@
             </td>
             <td tuiTd>
                 <div class="flex gap-2 ">
-                    <button appearance="secondary" iconStart="@tui.users" tuiButton tuiButtonVertical type="button"
-                    
+                    <button appearance="positive" iconStart="@tui.users" tuiButton  type="button"
+                    (click)="showDialogUpdate()"
                         >
                         Actualizar
                     </button>
-                    <button appearance="error" iconStart="@tui.trash" tuiButton tuiButtonVertical type="button"
-                    
+                    <button appearance="error" iconStart="@tui.trash" tuiButton  type="button"
+                      (click)="onDeleteProveedor(proveedor.id)"
                         >
                         Desactivar
                     </button>

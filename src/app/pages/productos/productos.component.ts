@@ -1,17 +1,17 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TuiTable } from '@taiga-ui/addon-table';
-import { TuiButton, tuiDialog, TuiDialogService, TuiDropdown, TuiExpand } from '@taiga-ui/core';
+import { TuiButton, TuiDialogService, TuiDropdown, TuiExpand } from '@taiga-ui/core';
 import { TuiConfirmService, TuiItemsWithMore, TuiRadio } from '@taiga-ui/kit';
 
 import {
   TuiInputModule
 } from '@taiga-ui/legacy';
 
-import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 
-import { DialogcreateproductComponent } from '@/app/components/Dialogs/dialogcreateproduct/dialogcreateproduct.component';
-import { FormaddcategoriaComponent } from "../../components/Forms/formaddcategoria/formaddcategoria.component";
+import { DialogCreateCategoriaService } from '@/app/services/dialogs-services/dialog-create-categoria.service';
+import { DialogCreateProductService } from '@/app/services/dialogs-services/dialog-create-product.service';
+import { TablecategoriesComponent } from "../../components/Tables/tablecategories/tablecategories.component";
 import { TableproductComponent } from "../../components/Tables/tableproduct/tableproduct.component";
 
 @Component({
@@ -27,11 +27,12 @@ import { TableproductComponent } from "../../components/Tables/tableproduct/tabl
     TuiItemsWithMore,
     TuiTable,
     TuiInputModule,
-    TuiExpand, TableproductComponent, FormaddcategoriaComponent],
+    TuiExpand, TableproductComponent, TablecategoriesComponent],
   templateUrl: './productos.component.html',
   styleUrl: './productos.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiConfirmService]
+
 
 
 })
@@ -46,37 +47,18 @@ export class ProductosComponent {
     this.confirm.markAsDirty();
   }
 
-  protected onClick(content: PolymorpheusContent): void {
-    const closeable = this.confirm.withConfirm({
-      label: 'Are you sure?',
-      data: {
-        content: 'Your data will be <strong>lost</strong>',
-      },
-    });
+  private readonly dialogservicecreatecategoria = inject(DialogCreateCategoriaService);
+  protected showDialogCreateCategoria(): void {
+    this.dialogservicecreatecategoria.open().subscribe((result: any) => {
 
-    this.dialogs
-      .open(content, { label: 'Crear Categoria', closeable, dismissible: closeable, size: "auto" })
-      .subscribe({
-        complete: () => {
-          this.value = '';
-          this.confirm.markAsPristine();
-        },
-      });
-  }
-
-  private readonly dialog = tuiDialog(DialogcreateproductComponent, {
-    dismissible: true,
-    label: 'Agregar Producto',
-    size: "l"
-  });
-  protected showDialog(): void {
-    this.dialog().subscribe({
-      next: (data) => {
-        console.info(`Dialog emitted data = ${data}`);
-      },
-      complete: () => {
-        console.info('Dialog closed');
-      },
     });
   }
+  private readonly dialogserviceCreateProduct = inject(DialogCreateProductService);
+  protected showDialogCreateProduct(): void {
+    this.dialogserviceCreateProduct.open().subscribe((result: any) => {
+
+    });
+  }
+
+
 }

@@ -11,7 +11,7 @@ export const authGuard = (): Observable<boolean> => {
     const router = inject(Router);
 
     return store.select(selectAuth).pipe(
-        // Filtramos para asegurarnos de que no tomamos el estado hasta que loading sea false
+
         filter(authState => !authState.loadingCheckAuthenticated),
         map((authState: any) => authState.isAuthenticated),
         tap(isAuthenticated => {

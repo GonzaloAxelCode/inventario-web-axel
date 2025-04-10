@@ -4,6 +4,7 @@ import {
     actualizarInventario,
     actualizarInventarioFail,
     actualizarInventarioSuccess,
+    clearSearchInventarios,
     createInventario,
     createInventarioFail,
     createInventarioSuccess,
@@ -13,6 +14,9 @@ import {
     loadInventarios,
     loadInventariosFail,
     loadInventariosSuccess,
+    searchInventarioFail,
+    searchInventarios,
+    searchInventarioSuccess,
     updateStock,
     updateStockFail,
     updateStockSuccess,
@@ -20,39 +24,64 @@ import {
     verificarStockFail,
     verificarStockSuccess
 } from '../actions/inventario.actions';
-
 export interface InventarioState {
+    search_products_found: string;
+    count: number;
+    next: any;
+    previous: any;
     inventarios: Inventario[];
     loading: boolean;
     errors: any;
+    index_page: any;
+    length_pages: any;
+    loadingProductosInventario: boolean;
+    loadingCreate: boolean;
+    loadingUpdate: boolean;
+    loadingDeactivate: boolean;
+    loadingDelete: boolean;
+    loadingSearch: boolean;
+    productos_search: Inventario[];
 }
 
 const initialState: InventarioState = {
-    inventarios: [],
+    search_products_found: "",  // Inicializa como string vacío si es que no hay un valor predeterminado
+    count: 0,
+    next: null,
+    previous: null,
+    inventarios: [],  // Inicializa como un array vacío
     loading: false,
-    errors: null
+    errors: {},  // Inicializa como un objeto vacío
+    index_page: null,
+    length_pages: null,
+    loadingProductosInventario: false,
+    loadingCreate: false,
+    loadingUpdate: false,
+    loadingDeactivate: false,
+    loadingDelete: false,
+    loadingSearch: false,
+    productos_search: []  // Inicializa como un array vacío
 };
-
 export const inventarioReducer = createReducer(
     initialState,
 
-    // Cargar inventarios
+
     on(loadInventarios, state => ({
         ...state,
-        loading: true
+        loadingProductosInventario: true
     })),
-    on(loadInventariosSuccess, (state, { inventarios }) => ({
+    on(loadInventariosSuccess, (state, { inventarios, next, previous, index_page, length_pages }) => ({
         ...state,
         inventarios,
-        loading: false
+        next, previous, index_page, length_pages,
+        loadingProductosInventario: false
     })),
     on(loadInventariosFail, (state, { error }) => ({
         ...state,
         errors: error,
-        loading: false
+        loadingProductosInventario: false
     })),
 
-    // Crear inventario
+
     on(createInventario, state => ({
         ...state,
         loading: true
@@ -68,7 +97,7 @@ export const inventarioReducer = createReducer(
         loading: false
     })),
 
-    // Actualizar stock
+
     on(updateStock, state => ({
         ...state,
         loading: true
@@ -84,7 +113,7 @@ export const inventarioReducer = createReducer(
         loading: false
     })),
 
-    // Ajustar stock
+
     on(actualizarInventario, state => ({
         ...state,
         loading: true
@@ -103,7 +132,7 @@ export const inventarioReducer = createReducer(
         loading: false
     })),
 
-    // Verificar stock
+
     on(verificarStock, state => ({
         ...state,
         loading: true
@@ -118,7 +147,7 @@ export const inventarioReducer = createReducer(
         errors: error,
         loading: false
     })),
-    //eliminar
+
     on(eliminarInventarioAction, state => ({
         ...state,
         loading: true
@@ -132,7 +161,31 @@ export const inventarioReducer = createReducer(
         ...state,
         errors: error,
         loading: false
+    })),
+    //search
+    on(searchInventarios, state => ({
+        ...state,
+        loadingSearch: true
+    })),
+    on(searchInventarioSuccess, (state, { inventarios, search_products_found, count, next, previous, index_page, length_pages }) => ({
+        ...state,
+        productos_search: inventarios,
+        loadingSearch: false,
+        search_products_found: search_products_found,
+        count: count,
+        next, previous, index_page, length_pages
+    })),
+    on(searchInventarioFail, (state, { error }) => ({
+        ...state,
+        errors: error,
+        loadingSearch: false
+    })),
+    on(clearSearchInventarios, (state) => ({
+        ...state,
+        count: 0,
+        loadingSearch: false,
+        productos_search: [],
+        search_products_found: ""
     }))
-
 );
 

@@ -23,6 +23,9 @@ import { PermisossettingsComponent } from './components/settingscomponents/permi
 import { SettingslayoutComponent } from './components/settingscomponents/settingslayout/settingslayout.component';
 import { UsermanagementComponent } from './components/settingscomponents/usermanagement/usermanagement.component';
 import { VentassettingsComponent } from './components/settingscomponents/ventassettings/ventassettings.component';
+import { superUserGuard } from './guards/superuser.guard';
+import { CajaComponent } from './pages/caja/caja.component';
+import { ComprasComponent } from './pages/compras/compras.component';
 import { SettiingsComponent } from './pages/settiings/settiings.component';
 import { TiendasComponent } from './pages/tiendas/tiendas.component';
 import { VentasComponent } from './pages/ventas/ventas.component';
@@ -43,6 +46,8 @@ const routes: Routes = [
 			{ path: 'perfil', component: PerfilComponent },
 			{ path: 'tiendas', component: TiendasComponent },
 			{ path: 'reportes', component: ReportesComponent },
+			{ path: 'caja', component: CajaComponent },
+			{ path: 'compras', component: ComprasComponent },
 			{ path: 'dashboard', component: DashboardComponent },
 			{
 				path: 'settings',
@@ -53,7 +58,7 @@ const routes: Routes = [
 					{ path: 'ventas', component: VentassettingsComponent },
 					{ path: 'permisos', component: PermisossettingsComponent },
 					{ path: 'perfil', component: PerfilsettingsComponent },
-					{ path: 'usermanagement', component: UsermanagementComponent },
+					{ path: 'usermanagement', component: UsermanagementComponent, canActivate: [superUserGuard] },
 
 				]
 			}

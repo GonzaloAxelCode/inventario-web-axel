@@ -1,14 +1,16 @@
 import { Tienda, TiendaState } from '@/app/models/tienda.models';
-import { desactivateTiendaAction, loadTiendasAction } from '@/app/state/actions/tienda.actions';
+import { DialogUpdateTiendaService } from '@/app/services/dialogs-services/dialog-updatetienda.service';
+import { desactivateTiendaAction } from '@/app/state/actions/tienda.actions';
 import { AppState } from '@/app/state/app.state';
 import { selectTiendaState } from '@/app/state/selectors/tienda.selectors';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { TuiResponsiveDialogService } from '@taiga-ui/addon-mobile';
 import { TuiTable } from '@taiga-ui/addon-table';
-import { TuiAppearance, TuiButton } from '@taiga-ui/core';
-import { TuiBadge } from '@taiga-ui/kit';
+import { TuiAlertService, TuiAppearance, TuiButton } from '@taiga-ui/core';
+import { TUI_CONFIRM, TuiBadge, TuiConfirmData } from '@taiga-ui/kit';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -42,7 +44,7 @@ export class TabletiendasComponent implements OnInit {
   constructor(private store: Store<AppState>, private cdRef: ChangeDetectorRef) { }
 
   ngOnInit() {
-    this.store.dispatch(loadTiendasAction());
+
     this.tiendasState$ = this.store.select(selectTiendaState);
 
   }
@@ -55,7 +57,7 @@ export class TabletiendasComponent implements OnInit {
   }
 
   onUpdateTienda() {
-    console.log('Datos actualizados:', this.editedTienda);
+
 
     this.editingId = null;
   }
@@ -67,9 +69,39 @@ export class TabletiendasComponent implements OnInit {
     const newTienda = { ...tienda, activo: !tienda.activo };
     this.store.dispatch(desactivateTiendaAction({ id: newTienda.id, activo: newTienda.activo }));
   }
+  private readonly dialogs = inject(TuiResponsiveDialogService);
+  private readonly alerts = inject(TuiAlertService);
+  protected onDeleteTienda(id: any): void {
+    const data: TuiConfirmData = {
+      content: '¿Estás seguro de que deseas eliminar esta Tienda?',
+      yes: 'Eliminar',
+      no: 'Cancelar',
+    };
+
+    this.dialogs
+      .open<boolean>(TUI_CONFIRM, {
+        label: 'Confirmación de Eliminación',
+        size: 's',
+        data,
+      })
+      .subscribe((confirm) => {
+        if (confirm) {
 
 
+          this.alerts.open(' eliminado exitosamente.').subscribe();
+        } else {
+
+          this.alerts.open('Eliminación cancelada.').subscribe();
+        }
+      });
+  }
   getTiendaValue(venta: Tienda, key: string): any {
     return venta[key as keyof Tienda];
+  }
+  private readonly dialogService = inject(DialogUpdateTiendaService);
+  protected showDialogUpdate(): void {
+    this.dialogService.open({}).subscribe((result: any) => {
+
+    });
   }
 }

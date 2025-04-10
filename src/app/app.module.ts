@@ -26,6 +26,7 @@ import { provideToastr, ToastrModule } from 'ngx-toastr';
 
 import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations';
 
+import { TuiNotification, TuiRoot } from '@taiga-ui/core';
 import { SidenavComponent } from "./components/sidenav/sidenav.component";
 import { ConsultaService } from './services/consultas.service';
 import { InventarioService } from './services/inventario.service';
@@ -34,6 +35,8 @@ import { ProveedorService } from './services/proveedor.service';
 import { TiendaService } from './services/tienda.service';
 import { UserService } from './services/user.service';
 import { VentaService } from './services/venta.service';
+import { AppEffects } from './state/effects/app.effects';
+import { CajaEffects } from './state/effects/caja.effect';
 import { InventarioEffects } from './state/effects/inventario.effects';
 import { ProductoEffects } from './state/effects/producto.effects';
 import { ProveedorEffects } from './state/effects/proveedor.effects';
@@ -41,20 +44,25 @@ import { TiendaEffects } from './state/effects/tienda.effects';
 import { UserEffects } from './state/effects/user.effects';
 import { VentaEffects } from './state/effects/venta.effects';
 
+
 @NgModule({
 
 	declarations: [AppComponent],
 	imports: [
 		BrowserAnimationsModule,
-		ToastrModule.forRoot(),
+		TuiNotification,
 		BrowserModule,
 		AppRoutingModule,
 		HttpClientModule,
 		LoginComponent,
 		CommonModule,
+		TuiRoot,
+		ToastrModule.forRoot({
 
+		}),
 		StoreModule.forRoot(ROOT_REDUCER),
 		EffectsModule.forRoot([
+			AppEffects,
 			AuthEffects,
 			CategoriaEffects,
 			TiendaEffects,
@@ -62,7 +70,9 @@ import { VentaEffects } from './state/effects/venta.effects';
 			ProductoEffects,
 			InventarioEffects,
 			ProveedorEffects,
-			VentaEffects
+			VentaEffects,
+			CajaEffects,
+
 		]),
 		TranslateModule.forRoot({
 			defaultLanguage: 'en',
@@ -82,6 +92,7 @@ import { VentaEffects } from './state/effects/venta.effects';
 		VentaService,
 		provideAnimations(),
 		provideToastr(),
+
 		{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
 		NG_EVENT_PLUGINS,
 	],

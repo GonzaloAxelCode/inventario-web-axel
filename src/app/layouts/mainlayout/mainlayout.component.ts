@@ -9,7 +9,7 @@ import { SidenavComponent } from "../../components/sidenav/sidenav.component";
 @Component({
   selector: 'app-mainlayout',
   standalone: true,
-  imports: [SidenavComponent, CommonModule, RouterModule],
+  imports: [SidenavComponent, CommonModule, RouterModule,],
   templateUrl: './mainlayout.component.html',
   styleUrl: './mainlayout.component.scss'
 })

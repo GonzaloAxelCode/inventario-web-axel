@@ -1,4 +1,5 @@
 import { Producto, ProductoCreate } from '@/app/models/producto.models';
+import { QuerySearchProduct } from '@/app/services/utils/querys';
 import { createAction, props } from '@ngrx/store';
 
 export enum ActionTypes {
@@ -17,15 +18,21 @@ export enum ActionTypes {
     DELETE_PRODUCTO = 'DELETE_PRODUCTO',
     DELETE_PRODUCTO_SUCCESS = 'DELETE_PRODUCTO_SUCCESS',
     DELETE_PRODUCTO_FAIL = 'DELETE_PRODUCTO_FAIL',
+
+    SEARCH_PRODUCTOS = 'SEARCH_PRODUCTOS_PRODUCTO',
+    SEARCH_PRODUCTOS_SUCCESS = 'SEARCH_PRODUCTOS_SUCCESS',
+    SEARCH_PRODUCTOS_FAIL = 'SEARCH_PRODUCTOS_FAIL',
+    CLEAR_SEARCH_PRODUCTOS = 'CLEAR_SEARCH_PRODUCTOS',
 }
 
 export const loadProductosAction = createAction(
-    ActionTypes.LOAD_PRODUCTOS
+    ActionTypes.LOAD_PRODUCTOS,
+    props<{ page?: number, page_size?: number }>()
 );
 
 export const loadProductosSuccess = createAction(
     ActionTypes.LOAD_PRODUCTOS_SUCCESS,
-    props<{ productos: Producto[] }>()
+    props<{ productos: Producto[], next: any, previous: any, index_page: any, length_pages: any }>()
 );
 
 export const loadProductosFail = createAction(
@@ -92,3 +99,23 @@ export const deleteProductoFail = createAction(
     ActionTypes.DELETE_PRODUCTO_FAIL,
     props<{ error: any }>()
 );
+
+export const searchProductosAction = createAction(
+    ActionTypes.SEARCH_PRODUCTOS,
+    props<{ query: Partial<QuerySearchProduct>, page?: number, page_size?: number }>()
+);
+
+export const searchProductoSuccess = createAction(
+    ActionTypes.SEARCH_PRODUCTOS_SUCCESS,
+    props<{ productos: Producto[], search_products_found: string, count: number, next: any, previous: any, index_page: any, length_pages: any }>()
+);
+
+export const searchProductoFail = createAction(
+    ActionTypes.SEARCH_PRODUCTOS_FAIL,
+    props<{ error: any }>()
+);
+export const clearSearchProductos = createAction(
+    ActionTypes.CLEAR_SEARCH_PRODUCTOS
+);
+
+

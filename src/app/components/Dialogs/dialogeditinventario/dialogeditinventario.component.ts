@@ -9,7 +9,7 @@ import { TuiComboBoxModule, TuiSelectModule, TuiTextfieldControllerModule } from
 
 
 import { Inventario } from '@/app/models/inventario.models';
-import { actualizarInventario, loadInventarios } from '@/app/state/actions/inventario.actions';
+import { actualizarInventario } from '@/app/state/actions/inventario.actions';
 import { AppState } from '@/app/state/app.state';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -72,14 +72,14 @@ export class DialogeditinventarioComponent {
       costo_venta: [this.inventario.costo_venta, [Validators.required,]],
 
     });
-    this.store.dispatch(loadInventarios({ tiendaId: 1 }));
+
 
   }
 
 
   ngOnInit() {
 
-    console.log("Datos recibidos en el diálogo:", this.inventario);
+
 
   }
   onSubmit(): void {
@@ -91,11 +91,11 @@ export class DialogeditinventarioComponent {
         costo_compra: this.inventarioFormEdit.value.costo_compra,
         costo_venta: this.inventarioFormEdit.value.costo_venta,
       }
-      console.log('F:', preparedData);
+
       this.store.dispatch(actualizarInventario({ newInventario: preparedData }));
-      this.context.completeWith(true); // O true si necesitas devolver un valor
+      this.context.completeWith(true);
     } else {
-      console.log('Formulario inválido');
+
     }
   }
 }

@@ -1,4 +1,5 @@
 import { Inventario, InventarioCreate } from '@/app/models/inventario.models';
+import { QuerySearchInventario } from '@/app/services/inventario.service';
 import { createAction, props } from '@ngrx/store';
 
 export enum InventarioActionTypes {
@@ -24,24 +25,29 @@ export enum InventarioActionTypes {
     VERIFICAR_STOCK_FAIL = '[Inventario] Verificar Stock Fail',
     ELIMINAR_INVENTARIO = '[Inventario] Eliminar Inventario',
     ELIMINAR_INVENTARIO_SUCCESS = '[Inventario] Eliminar Inventario Success',
-    ELIMINAR_INVENTARIO_FAIL = '[Inventario] Eliminar Inventario Fail'
+    ELIMINAR_INVENTARIO_FAIL = '[Inventario] Eliminar Inventario Fail',
+
+
+    SEARCH_INVENTARIOS = 'SEARCH_INVENTARIOS',
+    SEARCH_INVENTARIOS_SUCCESS = 'SEARCH_INVENTARIOS_SUCCESS',
+    SEARCH_INVENTARIOS_FAIL = 'SEARCH_INVENTARIOS_FAIL',
+    CLEAR_SEARCH_INVENTARIOS = 'CLEAR_INVENTARIOS_PRODUCTOS',
 }
 
-// Cargar inventarios por producto o tienda
+
 export const loadInventarios = createAction(
     InventarioActionTypes.LOAD_INVENTARIOS,
-    props<{ tiendaId: number }>()
+    props<{ tiendaId: number, page?: number, page_size?: number }>()
 );
 export const loadInventariosSuccess = createAction(
     InventarioActionTypes.LOAD_INVENTARIOS_SUCCESS,
-    props<{ inventarios: Inventario[] }>()
+    props<{ inventarios: Inventario[], next: any, previous: any, index_page: any, length_pages: any }>()
 );
 export const loadInventariosFail = createAction(
     InventarioActionTypes.LOAD_INVENTARIOS_FAIL,
     props<{ error: any }>()
 );
 
-// Crear inventario
 export const createInventario = createAction(
     InventarioActionTypes.CREATE_INVENTARIO,
     props<{ inventario: InventarioCreate }>()
@@ -55,7 +61,7 @@ export const createInventarioFail = createAction(
     props<{ error: any }>()
 );
 
-// Actualizar stock
+
 export const updateStock = createAction(
     InventarioActionTypes.UPDATE_STOCK,
     props<{ inventarioId: number; cantidad: number }>()
@@ -69,7 +75,7 @@ export const updateStockFail = createAction(
     props<{ error: any }>()
 );
 
-// Ajustar stock
+
 export const actualizarInventario = createAction(
     InventarioActionTypes.ACTUALIZAR_INVENTARIO,
     props<{ newInventario: Partial<Inventario> }>()
@@ -83,7 +89,26 @@ export const actualizarInventarioFail = createAction(
     props<{ error: any }>()
 );
 
-// Verificar stock
+
+
+
+
+export const searchInventarios = createAction(
+    InventarioActionTypes.SEARCH_INVENTARIOS,
+    props<{ query: Partial<QuerySearchInventario>, page?: number, page_size?: number, tiendaId: number }>()
+);
+export const searchInventarioSuccess = createAction(
+    InventarioActionTypes.SEARCH_INVENTARIOS_SUCCESS,
+    props<{ inventarios: Inventario[], search_products_found: string, count: number, next: any, previous: any, index_page: any, length_pages: any }>()
+);
+export const searchInventarioFail = createAction(
+    InventarioActionTypes.SEARCH_INVENTARIOS_FAIL,
+    props<{ error: any }>()
+);
+
+
+
+
 export const verificarStock = createAction(
     InventarioActionTypes.VERIFICAR_STOCK,
     props<{ inventarioId: number }>()
@@ -96,7 +121,7 @@ export const verificarStockFail = createAction(
     InventarioActionTypes.VERIFICAR_STOCK_FAIL,
     props<{ error: any }>()
 );
-//eliminar
+
 export const eliminarInventarioAction = createAction(
     InventarioActionTypes.ELIMINAR_INVENTARIO,
     props<{ inventarioId: number }>()
@@ -109,4 +134,9 @@ export const eliminarInventarioFail = createAction(
     InventarioActionTypes.ELIMINAR_INVENTARIO_FAIL,
     props<{ error: any }>()
 );
+export const clearSearchInventarios = createAction(
+    InventarioActionTypes.CLEAR_SEARCH_INVENTARIOS
+);
+
+
 

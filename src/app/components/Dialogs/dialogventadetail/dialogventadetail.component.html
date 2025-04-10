@@ -1,57 +1,137 @@
+<div class=" p-6 text-white">
+
+    <div class="sm:grid grid-cols-12 gap-4">
+        <!-- Botones con Taiga UI -->
+        <div class="col-span-1  flex flex-col gap-4">
+            <a [href]="comprobante.pdf_url" target="_blank" iconStart="@tui.file-chart-column-increasing"
+                tuiButtonVertical tuiButton appearance="positive" class="bg-blue-600 text-white">
+                Ver PDF
+            </a>
+
+            <a [href]="comprobante.xml_url" target="_blank" iconStart="@tui.file-code-2" tuiButton appearance="warning"
+                class="bg-gray-600 text-white" tuiButtonVertical>
+                Ver XML
+            </a>
+
+            <a iconStart="@tui.folder-archive" [href]="comprobante.cdr_url" target="_blank" tuiButton appearance="info"
+                tuiButtonVertical class="bg-yellow-600 text-white border-none">
+                Ver CDR
+            </a>
+
+            <a iconStart="@tui.ticket-check" [href]="comprobante.ticket_url" target="_blank" tuiButton
+                appearance="glass" tuiButtonVertical class="bg-green-600 text-white">
+                Ver Ticket
+            </a>
+
+            <button tuiButton appearance="negative" iconStart="@tui.ban" tuiButtonVertical class="text-white">
+                Cancelar
+            </button>
+
+        </div>
+        <div class="col-span-11">
+            <!-- Tabla del Comprobante -->
+            <table tuiTable class="w-full text-sm border border-neutral-700 rounded-lg mb-4">
+                <thead class="bg-neutral-800">
+                    <tr>
+                        <th class="p-2 text-left" colspan="3">Información del Comprobante</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="p-2 font-semibold">Tipo:</td>
+                        <td class="p-2 text-xl" colspan="2">{{ comprobante.tipo_comprobante }}</td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 font-semibold">Serie:</td>
+                        <td class="p-2 text-xl">{{ comprobante.serie }}</td>
+                        <td class="p-2  font-semibold">Correlativo:
+                            <tui-chip size="s" class="text-md" iconEnd="@tui.message-circle-code"
+                                [style.border-radius.rem]="5">
+                                {{ comprobante.correlativo }}
+                            </tui-chip>
 
 
-<div class="max-w-4xl mx-auto p-2 text-white">
-    <p class="text-2xl font-bold text-white pt-3 pb-3">Detalle del Comprobante</p>
-    
-    <div class="grid grid-cols-3 gap-2 text-sm mt-2">
-        <p><span class="font-semibold">Tipo:</span> {{ comprobante.tipo_comprobante }}</p>
-        <p><span class="font-semibold">Serie:</span> {{ comprobante.serie }}</p>
-        <p><span class="font-semibold">Correlativo:</span> {{ comprobante.correlativo }}</p>
-        <p><span class="font-semibold">Moneda:</span> {{ comprobante.moneda }}</p>
-        <p><span class="font-semibold">Cliente:</span> {{ comprobante.nombre_cliente }}</p>
-        <p><span class="font-semibold">Documento Cliente:</span> {{ comprobante.numero_documento_cliente }}</p>
-        <p><span class="font-semibold">Estado SUNAT:</span> <span class="text-green-400">{{ comprobante.estado_sunat }}</span></p>
-        
-        
-        <p><span class="font-semibold">Total:</span> S/ {{ comprobante.total }}</p>
-        <p><span class="font-semibold">Sub Total:</span> S/ {{ comprobante.sub_total }}</p>
-        <p><span class="font-semibold">Gravadas:</span> S/ {{ comprobante.gravadas }}</p>
-        <p><span class="font-semibold">IGV:</span> S/ {{ comprobante.igv }}</p>
-        <p><span class="font-semibold">Valor Venta:</span> S/ {{ comprobante.valorVenta }}</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 font-semibold">Moneda:</td>
+                        <td class="p-2 text-xl" colspan="2">{{ comprobante.moneda }}</td>
+                    </tr>
+                    <tr>
+                        <td class="p-2  font-semibold">Cliente:</td>
+                        <td class="p-2  text-2xl">{{ comprobante.nombre_cliente }}</td>
+                        <td class="p-2 text-md font-semibold">Documento: <tui-badge appearance="info" size="m">
+
+                                {{ comprobante.numero_documento_cliente }}
+                            </tui-badge> </td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 font-semibold">Estado SUNAT:</td>
+                        <td class="p-2 text-green-400" colspan="2">
+                            <tui-badge appearance="positive">{{ comprobante.estado_sunat }}</tui-badge>
+                        </td>
+                    </tr>
+                    <tr>
+
+                        <td class="p-2 font-semibold">IGV:</td>
+                        <td class="p-2 text-xl"> S/ {{ comprobante.igv }}</td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 font-semibold">Gravadas:</td>
+                        <td class="p-2 text-xl">S/ {{ comprobante.gravadas }}</td>
+
+                    </tr>
+                    <tr>
+                        <td class="p-2 font-semibold">Leyenda:</td>
+                        <td class="p-2 text-sm font-extralight italic" colspan="2">{{ comprobante.leyenda }}</td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 font-semibold">Total:</td>
+                        <td class="p-2 text-4xl font-bold   text-green-500" colspan="2">
+                            S/ {{ comprobante.total }}
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+
+            <!-- Tabla de Productos Vendidos -->
+            <table tuiTable class="w-full text-sm border border-neutral-700 rounded-lg mt-2">
+                <thead class="bg-neutral-800">
+                    <tr>
+                        <th class="p-2 text-left">Código</th>
+                        <th class="p-2 text-left">Producto</th>
+                        <th class="p-2 text-left">Cantidad</th>
+                        <th class="p-2 text-left">Valor Unitario de Venta (Sin IGV)</th>
+                        <th class="p-2 text-left">Valor Total de Venta (Sin IGV)</th>
+
+                        <th class="p-2 text-left">IGV total </th>
+
+                        <th class="p-2 text-left">Total </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of comprobante.items" class="border-b border-neutral-700">
+                        <td class="p-2">{{ item.codigo }}</td>
+                        <td class="p-2">{{ item.descripcion }}</td>
+                        <td class="p-2">{{ item.cantidad }}</td>
+                        <td class="p-2">S/ {{ item.valorUnitario }}</td>
+                        <td class="p-2">S/ {{ item.valorVenta }}</td>
+
+                        <td class="p-2">S/ {{ item.totalImpuestos }}</td>
+
+
+                        <td class="p-2">S/ {{ item.precioUnitario * item.cantidad }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+
+
     </div>
-            <p><span class="font-semibold">Leyenda:</span>  <span class="text-sm"> {{ comprobante.leyenda }} </span></p>
-    
-    
-    <table tuiTable class="w-full text-sm border border-neutral-700 rounded-lg mt-2">
-        <thead class="bg-neutral-800">
-            <tr>
-                <th class="p-2 text-left">Código</th>
-                <th class="p-2 text-left">Descripción</th>
-                <th class="p-2 text-left">Cantidad</th>
-                <th class="p-2 text-left">Valor Unitario</th>
-                <th class="p-2 text-left">IGV</th>
-                <th class="p-2 text-left">Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let item of comprobante.items" class="border-b border-neutral-700">
-                <td class="p-2">{{ item.codigo }}</td>
-                <td class="p-2">{{ item.descripcion }}</td>
-                <td class="p-2">{{ item.cantidad }}</td>
-                <td class="p-2">S/ {{ item.valorUnitario }}</td>
-                <td class="p-2">S/ {{ item.igv }}</td>
-                <td class="p-2">S/ {{ item.valorVenta }}</td>
-            </tr>
-        </tbody>
-    </table>
-    
-    <div class="mt-6 flex gap-4">
-        <a [href]="comprobante.pdf_url" target="_blank" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm border border-neutral-700">Ver PDF</a>
-        <a [href]="comprobante.xml_url"  target="_blank" class="px-4 py-2 bg-gray-600 text-white rounded-lg text-sm border border-neutral-700">Ver XML</a>
-        <a [href]="comprobante.cdr_url"  target="_blank" class="px-4 py-2 bg-yellow-600 text-white rounded-lg text-sm border border-neutral-700">Ver CDR</a>
-        <a [href]="comprobante.ticket_url"  target="_blank" class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm border border-neutral-700">Ver Ticket</a>
-        <a  class="px-4 py-2 cursor-pointer bg-red-600 text-white rounded-lg text-sm border border-neutral-700">Cancelar Comprobante</a>
-        <a  class="px-4 py-2 cursor-pointer bg-red-600 text-white rounded-lg text-sm border border-neutral-700">Eliminar la venta</a>
-    </div>
+
+
 </div>
-

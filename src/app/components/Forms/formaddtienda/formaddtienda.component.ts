@@ -34,7 +34,7 @@ export class FormaddtiendaComponent {
 
   onSubmit() {
     if (this.tiendaForm.valid) {
-      console.log(this.tiendaForm.value);
+
       const newTienda = this.tiendaForm.value
       this.store.dispatch(createTiendaAction({
         tienda: newTienda

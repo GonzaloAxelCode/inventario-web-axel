@@ -9,6 +9,7 @@ import { AppState } from '@/app/state/app.state';
 import { inject } from '@angular/core';
 import { CanActivateFn } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { TIENDA_ID } from '../constants/tienda-vars';
 
 export const loadDataGuard: CanActivateFn = () => {
     const store = inject(Store<AppState>);
@@ -17,7 +18,7 @@ export const loadDataGuard: CanActivateFn = () => {
     store.dispatch(loadProductosAction({}));
     store.dispatch(loadProveedores());
     store.dispatch(loadTiendasAction());
-    store.dispatch(loadInventarios({ tiendaId: 1 }));
+    store.dispatch(loadInventarios({ tiendaId: TIENDA_ID }));
     store.dispatch(loadUserAction());
     store.dispatch(loadUsersAction());
     return true;

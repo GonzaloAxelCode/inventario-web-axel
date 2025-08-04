@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { ToastrService } from 'ngx-toastr';
 import { catchError, exhaustMap, map, of } from 'rxjs';
 
+import { DialogVentaDetailService } from '@/app/services/dialogs-services/dialog-venta-detail.service';
 import { VentaService } from '@/app/services/venta.service';
 import {
     cancelarVenta,
@@ -44,7 +45,8 @@ export class VentaEffects {
         private actions$: Actions,
         private ventaService: VentaService,
         private store: Store<AppState>,
-        private toastr: ToastrService
+        private toastr: ToastrService,
+        private dialogServiceVentaDetail: DialogVentaDetailService
     ) { }
     loadVentasPorRangoFechasTiendaEffect = createEffect(() =>
         this.actions$.pipe(
@@ -150,7 +152,10 @@ export class VentaEffects {
                 this.ventaService.createVenta(venta).pipe(
                     map(createdVenta => {
                         this.toastr.success('Venta creada exitosamente', 'Éxito');
-
+                        this.dialogServiceVentaDetail.open(createdVenta).subscribe((result) => {
+                            // Manejo opcional del resultado
+                            // if (result) this.store.dispatch(...);
+                        });
                         return crearVentaExito({ venta: createdVenta });
                     }),
                     catchError(error => {

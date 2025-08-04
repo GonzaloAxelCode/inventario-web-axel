@@ -1,3 +1,4 @@
+import { TIENDA_ID } from '@/app/constants/tienda-vars';
 import { cargarVentasRangoFechasTienda } from '@/app/state/actions/venta.actions';
 import { AppState } from '@/app/state/app.state';
 import { selectVentaState } from '@/app/state/selectors/venta.selectors';
@@ -101,7 +102,7 @@ export class ChartsalesbetweentwodatesComponent implements OnInit {
 
 
     this.store.dispatch(cargarVentasRangoFechasTienda({
-      tiendaId: 1,
+      tiendaId: TIENDA_ID,
       fromDate,
       toDate
     }));
@@ -110,7 +111,7 @@ export class ChartsalesbetweentwodatesComponent implements OnInit {
   private loadInitialData(): void {
     const initialRange = this.range;
     this.store.dispatch(cargarVentasRangoFechasTienda({
-      tiendaId: 1,
+      tiendaId: TIENDA_ID,
       fromDate: new Date(initialRange.from.year, initialRange.from.month, initialRange.from.day),
       toDate: new Date(initialRange.to.year, initialRange.to.month, initialRange.to.day)
     }));
@@ -124,7 +125,7 @@ export class ChartsalesbetweentwodatesComponent implements OnInit {
 
     // Disparar la carga de nuevos datos
     this.store.dispatch(cargarVentasRangoFechasTienda({
-      tiendaId: 1,
+      tiendaId: TIENDA_ID,
       fromDate: new Date(newRange.from.year, newRange.from.month, newRange.from.day),
       toDate: new Date(newRange.to.year, newRange.to.month, newRange.to.day)
     }));

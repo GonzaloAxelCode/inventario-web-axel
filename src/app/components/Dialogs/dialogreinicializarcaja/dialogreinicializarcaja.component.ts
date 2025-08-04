@@ -1,3 +1,4 @@
+import { TIENDA_ID } from '@/app/constants/tienda-vars';
 import { reinicializarCaja } from '@/app/state/actions/caja.actions';
 import { AppState } from '@/app/state/app.state';
 import { selectCaja } from '@/app/state/selectors/caja.selectors';
@@ -29,7 +30,7 @@ export class DialogreinicializarcajaComponent {
   }
   onSubmit() {
     this.store.dispatch(reinicializarCaja({
-      tiendaId: 1,
+      tiendaId: TIENDA_ID,
       cajaId: this.id_caja,
       userId: 5,
       saldoInicial: this.form.value.saldo_inicial,

@@ -1,3 +1,4 @@
+import { TIENDA_ID } from '@/app/constants/tienda-vars';
 import { cargarProductosMenorStock } from '@/app/state/actions/venta.actions';
 import { AppState } from '@/app/state/app.state';
 import { VentaState } from '@/app/state/reducers/venta.reducer';
@@ -23,7 +24,7 @@ export class DashboardLowStockComponent implements OnInit {
   selectVentas$?: Observable<VentaState>
   constructor() {
     this.store.dispatch(cargarProductosMenorStock({
-      tiendaId: 1,
+      tiendaId: TIENDA_ID,
     }));
   }
   ngOnInit() {

@@ -11,7 +11,7 @@ import { selectCaja, selectCajaState } from '@/app/state/selectors/caja.selector
 import { AsyncPipe, CommonModule, NgIf } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { TuiTable } from '@taiga-ui/addon-table';
 import { TuiDay } from '@taiga-ui/cdk';
 import {
@@ -29,6 +29,8 @@ import { TuiFieldErrorPipe, TuiInputInline, TuiInputNumber, TuiSegmented, TuiSwi
 import { TuiCardLarge, TuiCell, TuiForm, TuiHeader } from '@taiga-ui/layout';
 import { TuiInputDateModule, TuiSelectModule, TuiTextfieldControllerModule } from '@taiga-ui/legacy';
 
+import { TIENDA_ID } from '@/app/constants/tienda-vars';
+import { selectAuth } from '@/app/state/selectors/auth.selectors';
 import { isPlatformBrowser } from '@angular/common';
 import { Injectable, PLATFORM_ID } from '@angular/core';
 import { TuiFormatDateService } from '@taiga-ui/core';
@@ -86,7 +88,9 @@ export class CajaComponent implements OnInit {
   caja_is_open$!: Observable<boolean>;
   operaciones: OperacionCaja[] = []
   selectCaja$!: Observable<Caja>;
+  authState$ = this.store.pipe(select(selectAuth));
 
+  userId: number = 0;
 
   protected readonly form = new FormGroup({
     saldo_inicial: new FormControl("", Validators.required),
@@ -95,7 +99,7 @@ export class CajaComponent implements OnInit {
   protected readonly columns = ["id_operacion", "detalles", "tipo", "usuario", "fecha", "monto"]
   constructor(private store: Store<AppState>) {
     this.store.dispatch(loadCaja({
-      tiendaId: 1,
+      tiendaId: TIENDA_ID,
     }));
     this.caja_is_open$ = this.store.select(selectCajaState).pipe(
       map(caja => caja.caja_is_open)
@@ -110,6 +114,10 @@ export class CajaComponent implements OnInit {
     this.store.select(selectCaja).subscribe((state) => {
       console.log(state)
       this.operaciones = state.operaciones
+    });
+
+    this.store.pipe(select(selectAuth)).subscribe(authState => {
+      this.userId = Number(authState?.id_user) || 0;
     });
   }
 
@@ -149,8 +157,6 @@ export class CajaComponent implements OnInit {
     { number: 12, name: 'Diciembre' },
   ];
   onMonthChange(selectedMonth: string) {
-
-
   }
 
   private readonly dialogApertura = inject(DialogAperturaCajaService);
@@ -210,8 +216,8 @@ export class CajaComponent implements OnInit {
   onSubmit() {
     if (this.form.valid) {
       this.store.dispatch(createCaja({
-        tiendaId: 1,
-        usuarioId: 5,
+        tiendaId: TIENDA_ID,
+        usuarioId: this.userId,
         saldoInicial: this.form.value.saldo_inicial
       }))
     }

@@ -14,6 +14,7 @@ import { format } from 'date-fns'; // Importa la función format de date-fns
 import { es } from 'date-fns/locale'; // Importa la configuración regional para español
 import { map, Observable } from 'rxjs';
 
+import { TIENDA_ID } from '@/app/constants/tienda-vars';
 import { TuiInputModule, TuiTextareaModule, } from '@taiga-ui/legacy';
 @Component({
   selector: 'app-dashboard-sales-cards',
@@ -44,7 +45,7 @@ export class DashboardSalesCardsComponent implements OnInit {
     this.currentDay = this.getDayName(today.getDay());
     this.currentMonth = this.getMonthName(today.getMonth());
     this.currentWeek = this.getWeekNumber(today);
-    this.store.dispatch(cargarResumenVentas({ tiendaId: 1 })); // Cambia el 1 por el id de tu tienda
+    this.store.dispatch(cargarResumenVentas({ tiendaId: TIENDA_ID })); // Cambia el 1 por el id de tu tienda
 
   }
   protected readonly testForm = new FormGroup({
@@ -70,7 +71,7 @@ export class DashboardSalesCardsComponent implements OnInit {
     console.log('Mes seleccionado:', selectedMonthObj.number,);
     // Aquí puedes hacer algo con el mes seleccionado, como actualizar otro campo o realizar alguna acción.
     this.store.dispatch(cargarResumenVentasByDate({
-      tiendaId: 1,
+      tiendaId: TIENDA_ID,
       month: selectedMonthObj.number,
       day: 1,
       year: new Date().getFullYear(), // Año actual
@@ -109,7 +110,7 @@ export class DashboardSalesCardsComponent implements OnInit {
       if (date) {
 
         this.store.dispatch(cargarResumenVentasByDate({
-          tiendaId: 1,
+          tiendaId: TIENDA_ID,
           month: date.month + 1,
           day: date.day,
           year: date.year, // Año actual

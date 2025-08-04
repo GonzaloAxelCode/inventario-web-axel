@@ -1,3 +1,4 @@
+import { TIENDA_ID } from '@/app/constants/tienda-vars';
 import { checkTokenAction } from '@/app/state/actions/auth.actions';
 import { loadCategorias } from '@/app/state/actions/categoria.actions';
 import { loadInventarios } from '@/app/state/actions/inventario.actions';
@@ -26,7 +27,7 @@ export class AppEffects {
                     this.store.dispatch(loadProveedores());
 
                     this.store.dispatch(loadTiendasAction());
-                    this.store.dispatch(loadInventarios({ tiendaId: 1 }));
+                    this.store.dispatch(loadInventarios({ tiendaId: TIENDA_ID }));
                     this.store.dispatch(loadUserAction());
                     this.store.dispatch(loadUsersAction());
                 })

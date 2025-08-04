@@ -8,16 +8,18 @@ import { TuiDataListWrapper, TuiTabs } from '@taiga-ui/kit';
 import { TuiComboBoxModule, TuiSelectModule, TuiTextfieldControllerModule } from '@taiga-ui/legacy';
 
 
+import { TIENDA_ID } from '@/app/constants/tienda-vars';
 import { Producto, ProductoState } from '@/app/models/producto.models';
 import { TiendaState } from '@/app/models/tienda.models';
 import { createInventario } from '@/app/state/actions/inventario.actions';
 import { AppState } from '@/app/state/app.state';
 import { ProveedorState } from '@/app/state/reducers/proveedor.reducer';
+import { selectAuth } from '@/app/state/selectors/auth.selectors';
 import { selectProductoState } from '@/app/state/selectors/producto.selectors';
 import { selectProveedorState } from '@/app/state/selectors/proveedor.selectors';
 import { selectTiendaState } from '@/app/state/selectors/tienda.selectors';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { TuiTable } from '@taiga-ui/addon-table';
 import { TuiAppearance } from '@taiga-ui/core';
 import { TuiDataListWrapperComponent, TuiInputNumber } from '@taiga-ui/kit';
@@ -50,27 +52,20 @@ import { Observable } from 'rxjs';
 export class DialogcreateinventarioComponent implements OnInit {
 
   tiendasState$?: Observable<TiendaState>
-
+  userId: number = 0;
   inventarioForm2!: FormGroup;
   productos: Producto[] = [];
   tiendas: any[] = [];
   proveedores: any[] = [];
 
   constructor(private fb: FormBuilder, private store: Store<AppState>) {
-    this.inventarioForm2 = this.fb.group({
-      producto: [null, Validators.required],
-      tienda: [1, Validators.required],
-      proveedor: [null, Validators.required],
-      responsable: [5],
-      cantidad: [1, [Validators.required, Validators.min(1)]],
-      stock_minimo: [1, [Validators.required, Validators.min(0)]],
-      stock_maximo: [100, [Validators.required, Validators.min(1)]],
-      costo_compra: [1, [Validators.required,]],
-      costo_venta: [1, [Validators.required,]],
-      descripcion: ['', Validators.required]
-    });
+
   }
   ngOnInit() {
+
+    this.store.pipe(select(selectAuth)).subscribe(authState => {
+      this.userId = Number(authState?.id_user) || 0;
+    });
     this.store.select(selectProductoState).subscribe((state: ProductoState) => {
       this.productos = state.productos;
     });
@@ -80,6 +75,18 @@ export class DialogcreateinventarioComponent implements OnInit {
     this.store.select(selectTiendaState).subscribe((state: TiendaState) => {
       this.tiendas = state.tiendas;
     });
+    this.inventarioForm2 = this.fb.group({
+      producto: [null, Validators.required],
+      tienda: [TIENDA_ID, Validators.required],
+      proveedor: [null, Validators.required],
+      responsable: [this.userId],
+      cantidad: [1, [Validators.required, Validators.min(1)]],
+      stock_minimo: [1, [Validators.required, Validators.min(0)]],
+      stock_maximo: [100, [Validators.required, Validators.min(1)]],
+      costo_compra: [1, [Validators.required,]],
+      costo_venta: [1, [Validators.required,]],
+      descripcion: ['', Validators.required]
+    });
   }
   onSubmit(): void {
     if (this.inventarioForm2.valid) {
@@ -87,7 +94,7 @@ export class DialogcreateinventarioComponent implements OnInit {
       const preparedData = {
         ...this.inventarioForm2.value,
         producto: this.inventarioForm2.value.producto.id,
-        tienda: this.inventarioForm2.value.tienda.id,
+        tienda: TIENDA_ID,
         proveedor: this.inventarioForm2.value.proveedor.id,
       }
 

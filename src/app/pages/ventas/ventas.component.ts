@@ -1,3 +1,4 @@
+import { TIENDA_ID } from '@/app/constants/tienda-vars';
 import { Venta } from '@/app/models/venta.models';
 import { QuerySearchVenta } from '@/app/services/caja.service';
 import { DialogVentaDetailService } from '@/app/services/dialogs-services/dialog-venta-detail.service';
@@ -110,7 +111,7 @@ export class VentasComponent implements OnInit {
 
     this.store.dispatch(cargarVentasTienda({
 
-      tiendaId: 1,
+      tiendaId: TIENDA_ID,
       from_date: [initialRange.from.year, initialRange.from.month, initialRange.from.day],
       to_date: [initialRange.to.year, initialRange.to.month, initialRange.to.day]
 
@@ -158,8 +159,8 @@ export class VentasComponent implements OnInit {
 
   protected showDialogVentaDetail(venta: Partial<Venta>): void {
 
-    this.dialogServiceVentaDetail.open(venta).subscribe((result: any) => {
-    });
+    this.dialogServiceVentaDetail.open(venta).subscribe()
+
   }
 
   protected readonly count = toSignal(
@@ -188,7 +189,7 @@ export class VentasComponent implements OnInit {
     }
 
     console.log(searchQuery)
-    this.store.dispatch(searchVenta({ query: searchQuery, tiendaId: 1 }))
+    this.store.dispatch(searchVenta({ query: searchQuery, tiendaId: TIENDA_ID }))
 
   }
 
@@ -206,11 +207,11 @@ export class VentasComponent implements OnInit {
   protected goToPage(index: number): void {
     this.ventasState$?.pipe(take(1)).subscribe(state => {
       if (state?.search_ventas_found === '') {
-        //this.store.dispatch(loadInventarios({ tiendaId: 1, page: index + 1 }));
+        //this.store.dispatch(loadInventarios({ tiendaId: TIENDA_ID, page: index + 1 }));
         const initialRange = this.range;
         this.store.dispatch(cargarVentasTienda({
 
-          tiendaId: 1,
+          tiendaId: TIENDA_ID,
           from_date: [initialRange.from.year, initialRange.from.month, initialRange.from.day],
           to_date: [initialRange.to.year, initialRange.to.month, initialRange.to.day],
           page: index + 1
@@ -229,7 +230,7 @@ export class VentasComponent implements OnInit {
           tipo_documento_cliente: this.form.value.tipo_documento_cliente === "Dni" ? "1" : "6",
           estado_sunat: this.form.value.estado_sunat || ""
         }
-        this.store.dispatch(searchVenta({ query: searchQuery, tiendaId: 1, page: index + 1 }));
+        this.store.dispatch(searchVenta({ query: searchQuery, tiendaId: TIENDA_ID, page: index + 1 }));
       }
     });
   }

@@ -1,3 +1,4 @@
+import { TIENDA_ID } from '@/app/constants/tienda-vars';
 import { Categoria, CategoriaState } from '@/app/models/categoria.models';
 import { Inventario } from '@/app/models/inventario.models';
 import { Producto, ProductoState } from '@/app/models/producto.models';
@@ -119,7 +120,7 @@ export class TableinventarioComponent {
       activo: this.form.value.activo === null ? null : this.form.value.activo === "Activo"
     }
     console.log(searchQuery)
-    this.store.dispatch(searchInventarios({ query: searchQuery, tiendaId: 1 }))
+    this.store.dispatch(searchInventarios({ query: searchQuery, tiendaId: TIENDA_ID }))
 
   }
 
@@ -203,14 +204,14 @@ export class TableinventarioComponent {
   protected goToPage(index: number): void {
     this.inventariosState$?.pipe(take(1)).subscribe(state => {
       if (state?.search_products_found === '') {
-        this.store.dispatch(loadInventarios({ tiendaId: 1, page: index + 1 }));
+        this.store.dispatch(loadInventarios({ tiendaId: TIENDA_ID, page: index + 1 }));
       } else {
         const searchQuery: Partial<QuerySearchInventario> = {
           nombre: this.form.value.nombre || "",
           categoria: this.form.value?.categoria?.id || 0,
           activo: this.form.value.activo === null ? null : this.form.value.activo === "Activo"
         };
-        this.store.dispatch(searchInventarios({ query: searchQuery, tiendaId: 1 }));
+        this.store.dispatch(searchInventarios({ query: searchQuery, tiendaId: TIENDA_ID }));
       }
     });
   }

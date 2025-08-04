@@ -1,13 +1,17 @@
+
+
+import { TIENDA_ID } from '@/app/constants/tienda-vars';
 import { ConsultaService } from '@/app/services/consultas.service';
 import { DialogVentaDetailService } from '@/app/services/dialogs-services/dialog-venta-detail.service';
 import { DialogService } from '@/app/services/dialogs-services/dialog.service';
-import { clearVentaTemporal, crearVenta } from '@/app/state/actions/venta.actions';
+import { crearVenta } from '@/app/state/actions/venta.actions';
 import { AppState } from '@/app/state/app.state';
+import { selectAuth } from '@/app/state/selectors/auth.selectors';
 import { selectVenta } from '@/app/state/selectors/venta.selectors';
 import { AsyncPipe, CommonModule, NgForOf } from '@angular/common';
 import { ChangeDetectorRef, Component, inject, OnInit, signal } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { TuiAmountPipe } from '@taiga-ui/addon-commerce';
 import { TuiTable } from '@taiga-ui/addon-table';
 import { TuiAlertService, TuiAppearance, TuiButton, TuiDataList, TuiDropdown, TuiLoader, TuiTextfield, TuiTitle } from '@taiga-ui/core';
@@ -84,19 +88,25 @@ export class HacerventaComponent implements OnInit {
   private readonly alerts = inject(TuiAlertService);
   private readonly dialogService = inject(DialogService);
 
+  userId: number = 0;
   constructor(private fb: FormBuilder, private consultaService: ConsultaService, private cdr: ChangeDetectorRef) {
     this.loadingCreateVenta$ = this.store.select(selectVenta);
     this.showVentaDetailTemporary$ = this.store.select(selectVenta)
 
+    this.store.pipe(select(selectAuth)).subscribe(authState => {
+      this.userId = Number(authState?.id_user) || 0;
+    });
 
     this.ventaForm = this.fb.group({
-      tiendaId: [1],
-      usuarioId: [5],
+
+      tiendaId: [TIENDA_ID],
+      usuarioId: [this.userId],
+
       metodoPago: [this.listMetodosPago[1], Validators.required],
       formaPago: [this.formasPago[0], Validators.required],
       tipoComprobante: [this.tipoComprobantes[0], Validators.required],
       cliente: [null, Validators.required],
-      documento_cliente: [""],
+      documento_cliente: ["76881855"],
       nombre_cliente: [""],
       productos: this.fb.array([], [Validators.required, Validators.minLength(1)])
     });
@@ -108,17 +118,7 @@ export class HacerventaComponent implements OnInit {
 
   }
   ngOnInit(): void {
-    this.store.select(selectVenta).subscribe((ventaState) => {
 
-      if (ventaState.showVentaDetailTemporary) {
-        this.dialogServiceVentaDetail.open(ventaState.temporaryVenta).subscribe((result: any) => {
-          if (result) {
-            console.log("CLOSED")
-            this.store.dispatch(clearVentaTemporal())
-          }
-        });
-      }
-    });
   }
   validarStock(): void {
     this.productosFormArray.controls.forEach((control, index) => {

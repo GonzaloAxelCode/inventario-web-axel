@@ -12,15 +12,18 @@
 
 
   <tui-block-status *ngIf="(ventasState$ | async)?.ventas?.length === 0 && !(ventasState$ | async)?.loading else tabla"
-    size="m" class="m-auto">
-    <img alt="survived"
-      src="https://res.cloudinary.com/ddksrkond/image/upload/v1743382501/APP%20INVENTARIO/undraw_no-data_ig65_k666oz.svg"
-      tuiSlot="top" />
+     class="m-auto">
+     <div>
+
+
+    <img alt="survived" class="w-[500px] object-contain m-auto"
+      src="https://res.cloudinary.com/ddksrkond/image/upload/v1754237996/search-product_aw8lfe.png"
+       />
 
     <h4>Aun no tienes ningun producto en el Inventario</h4>
 
     <span>Empieza a hacer el inventario</span>
-
+     </div>
 
   </tui-block-status>
 

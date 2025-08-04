@@ -12,6 +12,7 @@ import { TuiDataListWrapper, TuiTabs } from '@taiga-ui/kit';
 import { TuiComboBoxModule, TuiSelectModule } from '@taiga-ui/legacy';
 
 
+import { TIENDA_ID } from '@/app/constants/tienda-vars';
 import { TuiTable } from '@taiga-ui/addon-table';
 import { TuiDataListWrapperComponent } from '@taiga-ui/kit';
 
@@ -65,7 +66,7 @@ export class DialogrealizarprestamoComponent {
     if (this.testForm.valid) {
       console.log(this.testForm.value)
       this.store.dispatch(realizarPrestamo({
-        tiendaId: 1,
+        tiendaId: TIENDA_ID,
         userId: 5,
         monto: this.testForm.value.monto,
         descripcion: this.testForm.value.descripccion,
